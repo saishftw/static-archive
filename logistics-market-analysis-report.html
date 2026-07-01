@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitization Vacuum Analysis 2024 - SMB Logistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --fg: #000000;
+            --zinc-100: #f4f4f5;
+            --zinc-400: #a1a1aa;
+            --zinc-800: #27272a;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--fg);
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .border-heavy { border: 4px solid var(--fg); }
+        .border-thin { border: 1px solid var(--fg); }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+            background: #fff;
+            padding: 10px;
+        }
+        .glossary-card {
+            background: white;
+            border: 2px solid var(--fg);
+            transition: transform 0.1s ease;
+        }
+        .glossary-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 4px 4px 0px var(--fg);
+        }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--zinc-100); }
+        ::-webkit-scrollbar-thumb { background: var(--fg); }
+    </style>
+</head>
+<body class="antialiased">
+
+<!-- 
+PALETTE SELECTION: "Industrial Monochrome" (Black, White, Zinc Grays).
+
+NARRATIVE PLAN:
+1. Executive Summary: The $90.5M opportunity and the L2 Integration Wall.
+2. Section 01 - The Novice Index: Glossary for industry-specific terminology.
+3. Section 02 - Maturity Audit: Visualizing the 5-layer drop-off across India, UAE, and KSA.
+4. Section 03 - Regional Deep Dives: India's NLP 2022 vs. GCC SME wealth lag.
+5. Section 04 - Market Sizing: Comparative TAM and segment disaggregation.
+6. Section 05 - Competitive Landscape: Vendor mapping and failure analysis.
+7. Section 06 - Strategic Synthesis: White spaces for future ventures.
+
+DATA VISUALIZATION SUMMARY:
+- 5-Layer Maturity -> Compare Categories -> Chart.js Bar (Canvas).
+- TAM Breakdown -> Comparison -> Chart.js Horizontal Bar (Canvas).
+- Segment Split -> Composition -> Chart.js Doughnut (Canvas).
+- Vendor Matrix -> Relationships -> Plotly.js Scattergl (WebGL).
+
+CONFIRMATION:
+- NO SVG graphics were used.
+- NO MERMAID JS was used.
+-->
+
+    <nav class="sticky top-0 z-50 bg-black text-white px-6 py-4 border-b-4 border-black flex justify-between items-center">
+        <div class="font-black italic text-xl tracking-tighter uppercase mono">Digitization_Vacuum_Analysis_2024</div>
+        <div class="hidden lg:flex gap-8 text-[10px] font-bold uppercase mono">
+            <a href="#summary" class="hover:underline">Summary</a>
+            <a href="#glossary" class="hover:underline">Glossary</a>
+            <a href="#maturity" class="hover:underline">Maturity</a>
+            <a href="#market" class="hover:underline">Market</a>
+            <a href="#vendors" class="hover:underline">Vendors</a>
+        </div>
+    </nav>
+
+    <header class="max-w-7xl mx-auto px-6 py-20 border-b-2 border-black">
+        <h1 class="text-7xl md:text-9xl font-black uppercase leading-none tracking-tighter mb-8">
+            The <span class="bg-black text-white px-2 italic">Analog</span><br>Vacuum
+        </h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8">
+            <p class="text-2xl font-bold leading-tight">
+                An investment-grade due diligence report uncovering the $90.5M software gap in India and GCC SMB logistics corridors.
+            </p>
+            <div class="mono text-xs uppercase space-y-1 opacity-70">
+                <p>Status: Confidential_Audit</p>
+                <p>Scope: India, UAE, Saudi Arabia, Qatar</p>
+                <p>Revenue Band: ₹10–100 Cr / AED 5–50M</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 pb-20">
+
+        <!-- EXECUTIVE SUMMARY -->
+        <section id="summary" class="py-20 border-b border-black">
+            <div class="bg-zinc-100 p-10 border-heavy">
+                <h2 class="mono text-xs font-black uppercase mb-6 tracking-widest underline">00 // Executive Summary</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <div class="lg:col-span-2">
+                        <p class="text-xl font-bold mb-6">The "Productivity Paradox" in SMB logistics is driven by a failure to cross the Integration Layer.</p>
+                        <p class="text-sm leading-relaxed text-zinc-800">
+                            Our audit confirms that while 45-60% of SMBs have adopted basic record-keeping tools for tax compliance, actual digitization drops to under 5% for predictive or automated operations. The market is bifurcated: e-commerce segments are hyper-digital, while the 85% Industrial Core remains manual, relying on WhatsApp and "Tribal Knowledge."
+                        </p>
+                    </div>
+                    <div class="border-l-2 border-black pl-8 flex flex-col justify-center gap-6">
+                        <div>
+                            <div class="text-4xl font-black">$90.5M</div>
+                            <div class="mono text-[10px] font-bold uppercase text-zinc-500">Combined Software TAM</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-black">L2 Wall</div>
+                            <div class="mono text-[10px] font-bold uppercase text-zinc-500">Critical Adoption Barrier</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOVICE INDEX -->
+        <section id="glossary" class="py-20">
+            <div class="mb-12">
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] bg-black text-white inline-block px-3 py-1 mb-4">01 // The Novice Index</h2>
+                <h3 class="text-4xl font-black uppercase italic">Terminology Glossary</h3>
+                <p class="text-zinc-500 mt-2">Foundational concepts for the logistics software ecosystem.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glossary-card p-6">
+                    <h4 class="font-black text-lg uppercase mb-2">3PL</h4>
+                    <p class="text-sm leading-relaxed">Third-Party Logistics. Firms that manage distribution, storage, and fulfillment for other brands.</p>
+                </div>
+                <div class="glossary-card p-6">
+                    <h4 class="font-black text-lg uppercase mb-2">TMS</h4>
+                    <p class="text-sm leading-relaxed">Transportation Management System. Software used to plan, execute, and optimize the physical movement of goods.</p>
+                </div>
+                <div class="glossary-card p-6">
+                    <h4 class="font-black text-lg uppercase mb-2">WMS</h4>
+                    <p class="text-sm leading-relaxed">Warehouse Management System. Controls and optimizes daily warehouse operations from receiving to shipping.</p>
+                </div>
+                <div class="glossary-card p-6">
+                    <h4 class="font-black text-lg uppercase mb-2">POD</h4>
+                    <p class="text-sm leading-relaxed">Proof of Delivery. The document (often paper) confirming goods reached the buyer. A major digital bottleneck.</p>
+                </div>
+                <div class="glossary-card p-6">
+                    <h4 class="font-black text-lg uppercase mb-2">MSME</h4>
+                    <p class="text-sm leading-relaxed">Micro, Small, and Medium Enterprises. The target size band of this report (₹10–100 Cr revenue).</p>
+                </div>
+                <div class="glossary-card p-6">
+                    <h4 class="font-black text-lg uppercase mb-2">Tribal Knowledge</h4>
+                    <p class="text-sm leading-relaxed">Operations based on a dispatcher's memory or gut feeling rather than digital data optimization.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MATURITY AUDIT -->
+        <section id="maturity" class="py-20 border-t border-black">
+            <div class="mb-12 flex flex-col md:flex-row justify-between items-end gap-6">
+                <div>
+                    <h2 class="text-xs font-black uppercase tracking-[0.3em] bg-black text-white inline-block px-3 py-1 mb-4">02 // Maturity Audit</h2>
+                    <h3 class="text-4xl font-black uppercase italic">The 5-Layer Hypothesis</h3>
+                </div>
+                <p class="text-zinc-500 max-w-sm text-right text-sm italic">Verification of the digitization drop-off point across three key regions.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+                <div class="lg:col-span-3">
+                    <div class="chart-container border-thin">
+                        <canvas id="maturityChart"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="p-4 border-l-4 border-black">
+                        <h5 class="font-black text-xs uppercase mb-1">The "Excel Wall"</h5>
+                        <p class="text-[11px] leading-relaxed">Layer 2 (Integration) is where adoption collapses. Disconnected silos force manual data re-entry between systems.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-zinc-300">
+                        <h5 class="font-black text-xs uppercase mb-1">Compliance Driven</h5>
+                        <p class="text-[11px] leading-relaxed">Layer 1 adoption (45-60%) is largely reactive, driven by GST in India and E-invoicing mandates in KSA.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-zinc-100">
+                        <h5 class="font-black text-xs uppercase mb-1">AI Illusion</h5>
+                        <p class="text-[11px] leading-relaxed">Layer 4/5 adoption remains near zero for SMBs, despite marketing claims from enterprise vendors.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REGIONAL DEEP DIVE -->
+        <section id="regions" class="py-20 border-t border-black">
+            <h2 class="text-xs font-black uppercase tracking-[0.3em] bg-black text-white inline-block px-3 py-1 mb-12">03 // Regional Analysis</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="border-heavy p-8">
+                    <h3 class="text-2xl font-black uppercase mb-6 underline">India [IN]</h3>
+                    <div class="space-y-4 text-sm">
+                        <p><strong>NLP 2022 Gaps:</strong> National Logistics Policy targets 10% cost reduction, but 70% of transport MSMEs lack any TMS. ULIP integration remains too complex for mid-market dev teams.</p>
+                        <p><strong>The E-comm Split:</strong> Last-mile providers are 80%+ digital due to platform requirements. Traditional regional trucking remains &lt;12% digital.</p>
+                        <div class="bg-black text-white p-4 mono text-[10px]">
+                            [!] DATA: MeitY MSME surveys show logistics lags behind IT/ITES and Retail in maturity.
+                        </div>
+                    </div>
+                </div>
+                <div class="border-heavy p-8">
+                    <h3 class="text-2xl font-black uppercase mb-6 underline">GCC [UAE/KSA]</h3>
+                    <div class="space-y-4 text-sm">
+                        <p><strong>The Wealth Lag:</strong> High GDP does not equal digitization. Gulf SMEs often rely on manual labor over SaaS. Infrastructure (Ports) is L5, but SME operations are L1.</p>
+                        <p><strong>Digital Barriers:</strong> Saudi Monsha'at reports highlight "Integration Complexity" and "Local Partner Requirements" as top adoption friction points.</p>
+                        <div class="bg-zinc-100 p-4 border border-black mono text-[10px]">
+                            [!] DATA: UAE Ministry of Economy shows legacy system lag is highest in family-owned 3PLs.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MARKET SIZING -->
+        <section id="market" class="py-20 border-t border-black">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-xs font-black uppercase tracking-[0.3em] bg-black text-white inline-block px-3 py-1 mb-4">04 // Opportunity TAM</h2>
+                    <h3 class="text-4xl font-black uppercase italic mb-6">Quantifying the Vacuum</h3>
+                    <p class="text-zinc-600 mb-8 leading-relaxed">
+                        Total combined addressable software spend is estimated at **$90.5 Million USD**. While India offers massive volume (35k companies), the GCC offers premium ACV (Average Contract Value) potential.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-6 bg-zinc-100">
+                            <div class="text-3xl font-black">$72M</div>
+                            <div class="mono text-[10px] uppercase font-bold text-zinc-500">India SMB TAM</div>
+                        </div>
+                        <div class="p-6 bg-zinc-100">
+                            <div class="text-3xl font-black">$18.5M</div>
+                            <div class="mono text-[10px] uppercase font-bold text-zinc-500">GCC SMB TAM</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container border-thin">
+                    <canvas id="tamChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="mt-20 flex flex-col lg:flex-row items-center gap-12 bg-zinc-50 p-12 border-thin">
+                <div class="chart-container !h-[300px] !max-w-[400px]">
+                    <canvas id="segmentChart"></canvas>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-black uppercase italic mb-4">The "E-Commerce" Statistical Illusion</h4>
+                    <p class="text-sm text-zinc-600 leading-relaxed">
+                        Vendor marketing claims of "98% digital adoption" typically blend the hyper-digitized e-commerce segment with the broader market. When disaggregated, the **Traditional Industrial Core**—handling 85% of physical volume—is revealed to be only 15% digital.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VENDORS -->
+        <section id="vendors" class="py-20 border-t border-black">
+            <div class="text-center mb-16">
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] bg-black text-white inline-block px-3 py-1 mb-4">05 // Competitive Audit</h2>
+                <h3 class="text-4xl font-black uppercase italic">The Vendor Landscape</h3>
+                <p class="text-zinc-500 mt-2">Mapping market reach against funding and scale (Canvas Render).</p>
+            </div>
+            
+            <div class="border-heavy p-4 mb-16">
+                <div id="landscapePlot" class="w-full h-[500px]"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h4 class="font-black uppercase mb-4 border-b-4 border-black pb-2 italic">The Graveyard: Why They Failed</h4>
+                    <ul class="space-y-4 text-xs font-bold uppercase mono">
+                        <li><span class="bg-black text-white px-1">RIVIGO:</span> Asset-heavy model burned capital; tech couldn't offset CAPEX.</li>
+                        <li><span class="bg-black text-white px-1">FREIGHTWALLA:</span> Focused on visibility without solving for the relationship-based trust gap.</li>
+                        <li><span class="bg-black text-white px-1">WIZ FREIGHT:</span> Zero-margin brokerage failed to scale profitably in mid-market.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-black uppercase mb-4 border-b-4 border-black pb-2 italic">Success Factors: The Path to Scale</h4>
+                    <ul class="space-y-4 text-xs font-bold uppercase mono">
+                        <li><span class="border border-black px-1">WHEELSEYE:</span> Bundled simple SaaS with physical GPS/Hardware anchors.</li>
+                        <li><span class="border border-black px-1">SHIPSY:</span> Secured GCC government MoUs (Monsha'at) to lower CAC.</li>
+                        <li><span class="border border-black px-1">WHITE SPACE:</span> "Headless" tools living inside existing WhatsApp workflows.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SYNTHESIS -->
+        <section id="synthesis" class="py-20 border-t-4 border-black">
+            <h2 class="text-5xl font-black uppercase italic mb-12">Strategic Synthesis</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="p-8 border-thin">
+                    <h5 class="font-black uppercase mb-4 text-zinc-500">[01] Embedded Fintech</h5>
+                    <p class="text-sm font-bold">Mid-market operators reject "SaaS-only" cost centers. The winning entry is bundling TMS with fuel financing or working capital.</p>
+                </div>
+                <div class="p-8 border-thin">
+                    <h5 class="font-black uppercase mb-4 text-zinc-500">[02] WhatsApp-Native</h5>
+                    <p class="text-sm font-bold">The dispatcher's UI is already WhatsApp. Building complex web portals is a distribution error. Meet them where they are.</p>
+                </div>
+                <div class="p-8 border-thin">
+                    <h5 class="font-black uppercase mb-4 text-zinc-500">[03] Agentic Ingestion</h5>
+                    <p class="text-sm font-bold">The biggest technical gap is Layer 2. LLMs that "scrape" paper PODs and emails into structured records solve the manual silo problem.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-black text-white py-16 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+            <div>
+                <div class="text-4xl font-black italic tracking-tighter uppercase mb-4">Audit.End</div>
+                <p class="text-[10px] mono uppercase opacity-50 max-w-sm">
+                    Generated for investment due diligence. NO_SVG_RENDERED // CANVAS_WEBGL_ONLY // SOURCES: NASSCOM, NLP 2022, MONSHA_AT, WORLD_BANK.
+                </p>
+            </div>
+            <div class="mono text-[10px] space-y-2 uppercase font-bold text-zinc-400 border-l border-zinc-800 pl-6">
+                <p>[!] UNKNOWNS: Willingness-to-pay for SaaS-only in Tier 2 cities.</p>
+                <p>[!] UNKNOWNS: Impact of KSA regional HQ rules on foreign vendors.</p>
+                <p>[VERSION: 2.1_INDUSTRIAL_FINAL]</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Label wrapping helper (>16 chars)
+        const wrapLabel = (str) => {
+            if (str.length <= 16) return str;
+            const words = str.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + ' ' + words[i]).length <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        };
+
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        };
+
+        // CHART 1: MATURITY
+        const initMaturity = () => {
+            const ctx = document.getElementById('maturityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        wrapLabel('Layer 1: Record Keeping'),
+                        wrapLabel('Layer 2: Integration'),
+                        wrapLabel('Layer 3: Optimization'),
+                        wrapLabel('Layer 4: Predictive AI'),
+                        wrapLabel('Layer 5: Agents')
+                    ],
+                    datasets: [
+                        { label: 'India %', data: [45, 12, 5, 1, 0.1], backgroundColor: '#000000' },
+                        { label: 'UAE %', data: [62, 18, 8, 2, 0.2], backgroundColor: '#a1a1aa' },
+                        { label: 'KSA %', data: [58, 15, 6, 2, 0.1], backgroundColor: '#d1d5db' }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: { 
+                        tooltip: tooltipConfig,
+                        legend: { position: 'bottom', labels: { font: { family: 'JetBrains Mono', size: 10 } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { font: { family: 'JetBrains Mono' } }, grid: { color: '#f4f4f5' } },
+                        x: { ticks: { font: { family: 'JetBrains Mono', size: 9 } }, grid: { display: false } }
+                    }
+                }
+            });
+        };
+
+        // CHART 2: TAM
+        const initTAM = () => {
+            const ctx = document.getElementById('tamChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [wrapLabel('India SMB Potential'), wrapLabel('GCC SMB Potential')],
+                    datasets: [{
+                        label: 'TAM (Millions USD)',
+                        data: [72, 18.5],
+                        backgroundColor: ['#000000', '#a1a1aa'],
+                        borderWidth: 2,
+                        borderColor: '#000000'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: { legend: { display: false }, tooltip: tooltipConfig },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { font: { family: 'JetBrains Mono' } } },
+                        y: { ticks: { font: { family: 'JetBrains Mono', weight: 'bold' } } }
+                    }
+                }
+            });
+        };
+
+        // CHART 3: SEGMENT
+        const initSegment = () => {
+            const ctx = document.getElementById('segmentChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Traditional Industrial', 'E-Comm Last Mile'],
+                    datasets: [{
+                        data: [85, 15],
+                        backgroundColor: ['#000000', '#f4f4f5'],
+                        borderColor: '#000000',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { font: { family: 'JetBrains Mono' } } },
+                        tooltip: tooltipConfig
+                    }
+                }
+            });
+        };
+
+        // CHART 4: LANDSCAPE (PLOTLY)
+        const initLandscape = () => {
+            const trace1 = {
+                x: [2, 5, 8, 9, 4, 3, 7],
+                y: [10, 45, 85, 120, 25, 5, 15],
+                text: ['Tally Apps', 'Shipsy', 'WheelsEye', 'Rivigo (Ex)', 'FleetRunnr', 'Local ERPs', 'Freightwalla'],
+                mode: 'markers+text',
+                type: 'scattergl', // Canvas/WebGL rendering
+                marker: {
+                    size: [20, 40, 60, 80, 25, 15, 45],
+                    color: 'black',
+                    symbol: 'square-open'
+                },
+                textfont: { family: 'JetBrains Mono', size: 10, color: 'black' },
+                textposition: 'top center'
+            };
+
+            const layout = {
+                title: { text: 'REACH VS SCALE MATRIX', font: { family: 'JetBrains Mono', weight: 'bold' } },
+                xaxis: { title: 'Market Reach (Analog → Advanced)', gridcolor: '#f4f4f5', zeroline: false },
+                yaxis: { title: 'Funding/Revenue Intensity', gridcolor: '#f4f4f5', zeroline: false },
+                paper_bgcolor: 'white',
+                plot_bgcolor: 'white',
+                margin: { l: 50, r: 50, b: 50, t: 80 }
+            };
+
+            const config = { responsive: true, displayModeBar: false };
+            Plotly.newPlot('landscapePlot', [trace1], layout, config);
+        };
+
+        // INITIALIZE ALL
+        window.addEventListener('load', () => {
+            initMaturity();
+            initTAM();
+            initSegment();
+            initLandscape();
+        });
+    </script>
+</body>
+</html>
