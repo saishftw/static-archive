@@ -483,6 +483,30 @@ td .mono{font-family:var(--font-mono);font-size:12px;}
 .tradeoff .win::before{content:"WIN";font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.08em;background:var(--ink);color:var(--paper);padding:2px 6px;}
 .tradeoff .cost::before{content:"COST";font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.08em;border:1px solid var(--gray-3);color:var(--gray-1);padding:2px 6px;}
 
+/* Market sizing funnel */
+.funnel{border:1px solid var(--line);background:var(--white);padding:26px 22px;}
+.funnel .c-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;flex-wrap:wrap;gap:8px;}
+.funnel .c-title{font-family:var(--font-display);font-weight:700;font-size:16px;}
+.funnel .c-note{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-3);}
+.ftier{margin:0 auto 10px;width:0;overflow:hidden;border:1px solid var(--ink);background:var(--panel-2);padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;white-space:nowrap;transition:width 1s cubic-bezier(.16,1,.3,1);}
+.ftier:last-child{margin-bottom:0;}
+.funnel.in .ftier{width:var(--fw);}
+.ftier.dark{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.ft-k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-2);}
+.ftier.dark .ft-k{color:var(--gray-4);}
+.ft-v{font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.02em;}
+
+/* GTM motion cards */
+.pos.dark{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.pos.dark p{color:var(--gray-4);}
+.pos.dark .pn{color:var(--gray-4);}
+.gtm-meta{margin-top:auto;display:flex;flex-wrap:wrap;gap:8px 16px;padding-top:14px;border-top:1px solid var(--line-soft);}
+.gtm-meta span{font-family:var(--font-mono);font-size:11px;color:var(--gray-1);}
+.gtm-meta b{color:var(--ink);font-weight:700;}
+.pos.dark .gtm-meta{border-top-color:rgba(255,255,255,.15);}
+.pos.dark .gtm-meta span{color:var(--gray-4);}
+.pos.dark .gtm-meta b{color:var(--paper);}
+
 /* Glossary */
 .glossary{columns:2;column-gap:26px;}
 .gl{break-inside:avoid;border-bottom:1px solid var(--line-soft);padding:11px 0;margin-bottom:0;}
@@ -808,7 +832,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">1a · The Current Workflow</div>
+        <div class="eyebrow">2a · The Current Workflow</div>
         <div class="grid g-2" style="align-items:start;">
           <div class="flow" style="padding:26px 24px;">
             <div class="dline"><span class="t">Estimator Workflow · Sequence</span></div>
@@ -854,7 +878,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">1b · Process Health Metrics — Current State Benchmarks</div>
+        <div class="eyebrow">2b · Process Health Metrics — Current State Benchmarks</div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Metric</th><th>Definition</th><th>Current Benchmark</th><th>Confidence</th></tr></thead>
@@ -882,7 +906,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">1c · Existing Software Landscape</div>
+        <div class="eyebrow">2c · Existing Software Landscape</div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Software</th><th>Primary Function</th><th>Price Tier</th><th>AI / Automation</th><th>Honest Limitation</th></tr></thead>
@@ -900,7 +924,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </table>
         </div>
 
-        <div class="eyebrow">1d · Gap Analysis</div>
+        <div class="eyebrow">2d · Gap Analysis</div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Process Step</th><th>Best Tool Today</th><th>What It Does Well</th><th>What It Still Can't Do</th><th>Gap</th></tr></thead>
@@ -928,7 +952,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">2a · Segment Size &amp; Geography</div>
+        <div class="eyebrow">3a · Segment Size &amp; Geography</div>
         <div class="grid g-2" style="align-items:start;">
           <div class="chart" data-reveal>
             <div class="c-head">
@@ -969,7 +993,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">2b · Digitization Distribution</div>
+        <div class="eyebrow">3b · Digitization Distribution</div>
         <p class="body">Construction is one of the least-digitized sectors globally, second only to agriculture.<a class="ref" href="#ref-31">(31)</a> Maturity differs sharply between India's SME base and the GCC's mandate-driven mid-market.</p>
         <div class="chart" data-reveal>
           <div class="c-head">
@@ -999,12 +1023,81 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">2c · Willingness to Pay</div>
+        <div class="eyebrow">3c · Willingness to Pay</div>
         <div class="grid g-4">
           <div class="card tick"><h4>Status-Quo Cost · GCC</h4><p>UAE estimators earn AED 10–18k/mo ($32–58k/yr).<a class="ref" href="#ref-7">(7)</a> A team of 3–5 costs <b>$130–200k+</b> annually.</p></div>
           <div class="card tick"><h4>Status-Quo Cost · India</h4><p>Estimators earn ₹6–12L ($7–14k/yr),<a class="ref" href="#ref-57">(57)</a> but bid volume is far higher — favoring throughput ROI.</p></div>
           <div class="card tick"><h4>Current Software Spend</h4><p>$1,500–2,500 per seat/yr (Revit, Bluebeam); <b>$20k+</b>/yr for mid-market ERP licensing.<a class="ref" href="#ref-20">(20)</a></p></div>
           <div class="card dark tick"><h4>Pricing Models</h4><p class="muted">GCC accepts per-seat SaaS (~$299/user/mo)<a class="ref" href="#ref-16">(16)</a> &amp; project-volume tiers. India MSMEs prefer flat-rate annual plans.<a class="ref" href="#ref-38">(38)</a></p></div>
+        </div>
+
+        <div class="eyebrow" id="sizing">3d · Market Sizing — TAM / SAM / SOM<sup class="est">*</sup></div>
+        <p class="body">Sized top-down and reconciled against the report's own company counts. The headline correction: an earlier single “$38M mid-market” figure actually blended the true mid-market with the sub-₹20 Cr micro tail — so the picture splits into a broad software ceiling, a narrow core beachhead, and a realistic near-term capture.</p>
+        <div class="grid g-2" style="align-items:start;">
+          <div class="funnel" data-reveal>
+            <div class="c-head"><div class="c-title">Sizing Funnel</div><div class="c-note">Annual software revenue</div></div>
+            <div class="ftier" style="--fw:100%"><span class="ft-k">TAM · Global software</span><span class="ft-v">$1.5B</span></div>
+            <div class="ftier" style="--fw:74%"><span class="ft-k">Expanded SAM</span><span class="ft-v">~$38M</span></div>
+            <div class="ftier" style="--fw:52%"><span class="ft-k">Core SAM · mid-market</span><span class="ft-v">~$8–12M</span></div>
+            <div class="ftier dark" style="--fw:34%"><span class="ft-k">SOM · 3-yr</span><span class="ft-v">~$2M</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Tier</th><th>Basis</th><th>Size</th></tr></thead>
+                <tbody>
+                  <tr><td><b>TAM</b></td><td>Global construction estimating software, all trades/geos → $2.6B by 2030</td><td class="mono">$1.5B</td></tr>
+                  <tr><td><b>Expanded SAM</b></td><td>~3,300 firms incl. micro tail × ~$11.5k</td><td class="mono">~$38M</td></tr>
+                  <tr><td><b>Core SAM</b></td><td>~725 true mid-market firms × blended ACV</td><td class="mono">~$8–12M</td></tr>
+                  <tr><td><b>SOM · 3-yr</b></td><td>~180–200 logos (~28% of core base) + PLG</td><td class="mono">~$1.5–2.1M</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout tick"><span class="ci">Ceiling</span><p>Monetised as a <b>marketplace</b> (Position 3), the ceiling is material GMV — GCC HVAC alone is <b>~$18.9B by 2033</b><a class="ref" href="#ref-3">(3)</a> — not software seats. That gap is why the endgame is worth its execution risk.</p></div>
+          </div>
+        </div>
+
+        <div class="eyebrow">3e · Go-To-Market Motions</div>
+        <p class="body">GCC and India buy differently, so the plan runs distinct motions per segment — each sequenced to fund the next — with the marketplace as the eventual flip.</p>
+        <div class="grid g-2">
+          <div class="pos tick">
+            <div class="pn">Motion 1 · GCC · Direct</div>
+            <h4>Enterprise “Land &amp; Expand”</h4>
+            <p>High-touch outbound to Commercial Directors. Hook: the “Lost Bid Audit” — run a lost bid's spec through the AI live. Flat per-site SaaS.</p>
+            <div class="gtm-meta"><span><b>ACV</b> $15–18k</span><span><b>Seg. SAM</b> ~$5.6M</span><span><b>SOM Y3</b> ~$0.6–0.9M</span></div>
+          </div>
+          <div class="pos tick">
+            <div class="pn">Motion 2 · India · Channel</div>
+            <h4>ERP-Integrator Partnerships</h4>
+            <p>Sell through Tally / Odoo / SAP B1 integrators as a “Smart BOQ Ingestion” API into ERPs they already deploy. Rev-share, low friction.</p>
+            <div class="gtm-meta"><span><b>ACV</b> $5–8k</span><span><b>Seg. SAM</b> ~$2.1M</span><span><b>SOM Y3</b> ~$0.5–0.8M</span></div>
+          </div>
+          <div class="pos tick">
+            <div class="pn">Motion 3 · Long-tail · PLG</div>
+            <h4>Self-Serve “Pay Per Tender”</h4>
+            <p>Micro duct shops upload a spec, pay ~$99 per processed BOQ. Low revenue, but a labelled-data flywheel — <em>if</em> corrections are captured.</p>
+            <div class="gtm-meta"><span><b>Price</b> $50–150/BOQ</span><span><b>Exp. SAM</b> ~$5M</span><span><b>SOM Y3</b> ~$0.5M</span></div>
+          </div>
+          <div class="pos dark tick">
+            <div class="pn">Motion 4 · Endgame · Position 3</div>
+            <h4>The Marketplace Flip</h4>
+            <p>Give the tool to contractors free; route their priced demand to manufacturers who pay per lead / take-rate. Network effect + transaction-data moat.</p>
+            <div class="gtm-meta"><span><b>Monetise</b> take-rate</span><span><b>Ceiling</b> ~$18.9B GMV</span><span><b>When</b> after liquidity</span></div>
+          </div>
+        </div>
+
+        <div class="eyebrow">GTM Sequencing</div>
+        <div class="flow">
+          <div class="flow-line">
+            <div class="node"><span class="nn">YEAR 1</span><span class="nt">GCC Direct</span><span class="nd">10–15 anchor logos · PMF + cash + first data</span></div>
+            <div class="conn">→</div>
+            <div class="node"><span class="nn">YEAR 2</span><span class="nt">India Channel</span><span class="nd">ERP-integrator partnerships</span></div>
+            <div class="conn">→</div>
+            <div class="node"><span class="nn">YEAR 3</span><span class="nt">PLG Long-Tail</span><span class="nd">self-serve · data flywheel</span></div>
+            <div class="conn">→</div>
+            <div class="node key"><span class="nn">YEAR 3+</span><span class="nt">Marketplace</span><span class="nd">flip to demand-routing · Position 3</span></div>
+          </div>
+          <div class="flow-cap">Sell software first · evolve into the marketplace once liquidity exists</div>
         </div>
       </div>
     </section>
@@ -1020,7 +1113,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">3a · Spec Format Distribution &amp; Parseability</div>
+        <div class="eyebrow">4a · Spec Format Distribution &amp; Parseability</div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Input Format</th><th>GCC</th><th>India</th><th>AI Parseability</th><th>Key Challenge</th></tr></thead>
@@ -1035,7 +1128,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </table>
         </div>
 
-        <div class="eyebrow">3b · Existing AI Approaches in Adjacent Spaces</div>
+        <div class="eyebrow">4b · Existing AI Approaches in Adjacent Spaces</div>
         <div class="grid g-3">
           <div class="card tick">
             <h4>Drawing Understanding</h4>
@@ -1051,7 +1144,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">3c · The Ontology &amp; Standardization Question</div>
+        <div class="eyebrow">4c · The Ontology &amp; Standardization Question</div>
         <p class="body">SMACNA defines duct construction globally;<a class="ref" href="#ref-14">(14)</a> Uniclass 2015 and OmniClass provide hierarchical codes.<a class="ref" href="#ref-64">(64)</a> Yet MEP consultants write bespoke specs — blending legacy codes, local amendments and brand substitutions. AI cannot rely on string matching; it needs a semantic embedding database trained on MEP terminology.<a class="ref" href="#ref-13">(13)</a></p>
 
         <div class="onto">
@@ -1076,7 +1169,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">3d · Data Availability for Training &amp; Validation</div>
+        <div class="eyebrow">4d · Data Availability for Training &amp; Validation</div>
         <div class="grid g-3">
           <div class="stat tick"><div class="v">50–150<sup class="est">*</sup></div><div class="l">Project pairs to fine-tune per catalogue</div></div>
           <div class="stat tick"><div class="v">1–2<sup class="est">*</sup></div><div class="l">Design partners for foundational data</div></div>
@@ -1100,7 +1193,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </div>
         </div>
 
-        <div class="eyebrow">4a · Direct Competitors</div>
+        <div class="eyebrow">5a · Direct Competitors</div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Company</th><th>Founded</th><th>Backing</th><th>Target</th><th>Geo</th><th>Pricing</th><th>Honest Assessment</th></tr></thead>
@@ -1113,7 +1206,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           </table>
         </div>
 
-        <div class="eyebrow">4b · Adjacent Reference Companies</div>
+        <div class="eyebrow">5b · Adjacent Reference Companies</div>
         <div class="grid g-4">
           <div class="card tick"><h4>BrainBox AI</h4><p>Optimizes HVAC operations post-install. Proves real-estate appetite for AI in HVAC.</p></div>
           <div class="card tick"><h4>75F</h4><p>IoT HVAC intelligence for mid-market buildings. Signals how "smart" hardware shifts what must be quoted.</p></div>
@@ -1121,7 +1214,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
           <div class="card tick"><h4>Firmus AI</h4><p>CV analyzes drawings for scope gaps &amp; readiness. Proves CV understands multi-sheet blueprints. Acquired by Nemetschek.<a class="ref" href="#ref-39">(39)</a></p></div>
         </div>
 
-        <div class="eyebrow">4c · Strategic Positioning Options</div>
+        <div class="eyebrow">5c · Strategic Positioning Options</div>
         <div class="grid g-3">
           <div class="pos tick">
             <div class="pn">Position 1</div>
@@ -1194,7 +1287,7 @@ footer a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--g
         </div>
         <div class="legend-note">
           <div class="lrow"><span class="lk">(n)</span><span>A bracketed number appears next to a fact or figure. Click it to jump to the matching source below, then follow the outbound link to verify or validate the underlying data.</span></div>
-          <div class="lrow"><span class="lk star">*</span><span>Author's analytical estimate, market proxy, or derived aggregate — <b>not stated verbatim in any single cited source</b>. Applies to the digitization-maturity split, the minimum training-dataset size, the design-partner count, and the aggregated 600–850 target-company total. Directionally indicative, pending primary research.</span></div>
+          <div class="lrow"><span class="lk star">*</span><span>Author's analytical estimate, market proxy, or derived aggregate — <b>not stated verbatim in any single cited source</b>. Applies to the digitization-maturity split, the minimum training-dataset size, the design-partner count, the aggregated 600–850 target-company total, and the market-sizing tiers (TAM/SAM/SOM). Directionally indicative, pending primary research.</span></div>
         </div>
         <ol class="ref-list">
           <li id="ref-1"><span class="rn">1</span><a href="https://www.dreamztech.com/ai-solution/ai-takeoff-software-development/" target="_blank" rel="noopener">AI Takeoff Software Development (3× Faster Estimates) — DreamzTech</a></li>
