@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOM → BKK → PQC → HAN — Trip Dossier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141019;
+    --ink-soft:#211a2b;
+    --paper:#f4ecd8;
+    --paper-dim:#e2d6b8;
+    --gold:#c9a13b;
+    --gold-bright:#e6c165;
+    --lacquer:#b3402f;
+    --jade:#3f6e5b;
+    --line: rgba(244,236,216,0.16);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--ink);
+    color: var(--paper);
+    font-family:'Fraunces', serif;
+    font-weight:400;
+    line-height:1.5;
+    padding-bottom:80px;
+  }
+  ::selection{ background: var(--gold); color:var(--ink); }
+
+  .mono{ font-family:'Space Mono', monospace; }
+
+  /* ===== HERO ===== */
+  header.hero{
+    position:relative;
+    padding: 64px 24px 48px;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(201,161,59,0.18), transparent 45%),
+      radial-gradient(circle at 85% 0%, rgba(179,64,47,0.18), transparent 40%),
+      var(--ink);
+    border-bottom: 1px solid var(--line);
+    overflow:hidden;
+  }
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    font-size:12px;
+    color: var(--gold-bright);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px; height:1px;
+    background: var(--gold-bright);
+    display:inline-block;
+  }
+  h1.title{
+    font-family:'Bebas Neue', sans-serif;
+    font-weight:400;
+    font-size: clamp(48px, 12vw, 92px);
+    line-height:0.92;
+    letter-spacing:0.01em;
+    color: var(--paper);
+    text-transform:uppercase;
+  }
+  h1.title span{ color: var(--gold-bright); }
+  .subtitle{
+    margin-top:14px;
+    max-width:480px;
+    font-size:16px;
+    color: var(--paper-dim);
+    font-style:italic;
+  }
+
+  /* route strip - boarding pass style */
+  .route-strip{
+    margin-top:38px;
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:0;
+    border-top:1px dashed var(--line);
+    border-bottom:1px dashed var(--line);
+    padding: 16px 0;
+  }
+  .route-node{
+    display:flex; flex-direction:column; gap:2px;
+    padding: 0 18px;
+  }
+  .route-node .code{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:30px;
+    letter-spacing:0.03em;
+  }
+  .route-node .date{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color: var(--paper-dim);
+    text-transform:uppercase;
+  }
+  .route-arrow{
+    color: var(--gold);
+    font-size:18px;
+    padding: 0 4px;
+    opacity:0.7;
+  }
+
+  /* ===== NAV ===== */
+  nav.legnav{
+    position:sticky; top:0; z-index:50;
+    display:flex;
+    background: rgba(20,16,25,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.legnav a{
+    flex:1;
+    text-align:center;
+    padding:14px 8px;
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--paper-dim);
+    text-decoration:none;
+    border-bottom:2px solid transparent;
+    transition: color .2s, border-color .2s;
+  }
+  nav.legnav a:hover, nav.legnav a:focus-visible{
+    color: var(--gold-bright);
+    border-bottom-color: var(--gold-bright);
+  }
+
+  /* ===== LEG SECTIONS ===== */
+  section.leg{
+    padding: 56px 24px 20px;
+    max-width: 720px;
+    margin: 0 auto;
+    scroll-margin-top: 56px;
+  }
+  .leg-head{
+    display:flex;
+    align-items:baseline;
+    gap:16px;
+    margin-bottom: 8px;
+  }
+  .stamp{
+    width:64px; height:64px;
+    border-radius:50%;
+    border:2px solid currentColor;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:20px;
+    flex-shrink:0;
+    transform: rotate(-6deg);
+  }
+  .leg[data-city="bangkok"] .stamp{ color: var(--gold-bright); }
+  .leg[data-city="phuquoc"] .stamp{ color: var(--jade); }
+  .leg[data-city="hanoi"] .stamp{ color: var(--lacquer); }
+
+  .leg-title{
+    font-family:'Bebas Neue', sans-serif;
+    font-size: clamp(34px, 8vw, 52px);
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    line-height:1;
+  }
+  .leg-sub{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    color: var(--paper-dim);
+    margin: 6px 0 30px;
+    padding-left: 80px;
+  }
+
+  .day{
+    position:relative;
+    padding: 22px 0 22px 28px;
+    border-left: 1px solid var(--line);
+    margin-left: 8px;
+  }
+  .day::before{
+    content:"";
+    position:absolute;
+    left:-5px; top:26px;
+    width:9px; height:9px;
+    border-radius:50%;
+    background: var(--gold-bright);
+  }
+  .leg[data-city="phuquoc"] .day::before{ background: var(--jade); }
+  .leg[data-city="hanoi"] .day::before{ background: var(--lacquer); }
+
+  .day-date{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--gold-bright);
+    margin-bottom:4px;
+  }
+  .leg[data-city="phuquoc"] .day-date{ color: var(--jade); }
+  .leg[data-city="hanoi"] .day-date{ color: var(--lacquer); }
+
+  .day-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:20px;
+    margin-bottom:14px;
+    color: var(--paper);
+  }
+
+  .slot{
+    display:grid;
+    grid-template-columns: 84px 1fr;
+    gap:12px;
+    padding:9px 0;
+    font-size:15px;
+    align-items:baseline;
+  }
+  .slot .when{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    color: var(--paper-dim);
+    letter-spacing:0.04em;
+  }
+  .slot .what b{
+    color: var(--paper);
+    font-weight:600;
+  }
+  .slot .what{ color: var(--paper-dim); }
+
+  .option-card{
+    margin-top:16px;
+    padding:16px 18px;
+    background: var(--ink-soft);
+    border:1px solid var(--line);
+    border-radius:2px;
+  }
+  .option-card .opt-label{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color: var(--gold-bright);
+    margin-bottom:10px;
+    display:block;
+  }
+  .leg[data-city="phuquoc"] .option-card .opt-label{ color: var(--jade); }
+
+  .flag{
+    margin-top:16px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--lacquer);
+    background: rgba(179,64,47,0.08);
+    font-size:14px;
+    color: var(--paper-dim);
+    font-style: italic;
+  }
+  .flag b{ color: var(--paper); font-style:normal; }
+
+  .price{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    color: var(--gold-bright);
+  }
+
+  /* transfer divider */
+  .transfer{
+    max-width:720px;
+    margin: 12px auto 0;
+    padding: 22px 24px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    border-top:1px dashed var(--line);
+    border-bottom:1px dashed var(--line);
+  }
+  .transfer .plane{ font-size:20px; color:var(--gold-bright); }
+  .transfer .info{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    color: var(--paper-dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  .transfer .info b{ color: var(--paper); }
+
+  /* notes */
+  .notes{
+    max-width:720px;
+    margin: 60px auto 0;
+    padding: 28px 24px 40px;
+  }
+  .notes h2{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:28px;
+    text-transform:uppercase;
+    color: var(--gold-bright);
+    margin-bottom:18px;
+    letter-spacing:0.02em;
+  }
+  .notes ul{ list-style:none; }
+  .notes li{
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    font-size:14px;
+    color: var(--paper-dim);
+  }
+  .notes li:last-child{ border-bottom: 1px solid var(--line); }
+  .notes li b{ color: var(--paper); }
+
+  footer{
+    text-align:center;
+    padding: 40px 24px;
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color: var(--paper-dim);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+
+  @media (max-width: 480px){
+    .leg-sub{ padding-left:0; }
+    .slot{ grid-template-columns: 66px 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Group of eight · Aug 17–24, 2026</div>
+  <h1 class="title">The Last<br><span>Send-Off</span></h1>
+  <p class="subtitle">Three cities, four flights, one itinerary. Bangkok's rooftops to Phu Quoc's coast to Hanoi's beer street — booked, mapped, and ready to run on public transport and Grab.</p>
+
+  <div class="route-strip mono">
+    <div class="route-node"><span class="code">BOM</span><span class="date">17 Aug · 13:05</span></div>
+    <span class="route-arrow">✈</span>
+    <div class="route-node"><span class="code">BKK</span><span class="date">→ 20 Aug</span></div>
+    <span class="route-arrow">✈</span>
+    <div class="route-node"><span class="code">PQC</span><span class="date">→ 22 Aug</span></div>
+    <span class="route-arrow">✈</span>
+    <div class="route-node"><span class="code">HAN</span><span class="date">→ 24 Aug · 23:40</span></div>
+  </div>
+</header>
+
+<nav class="legnav">
+  <a href="#bangkok">Bangkok</a>
+  <a href="#phuquoc">Phu Quoc</a>
+  <a href="#hanoi">Hanoi</a>
+  <a href="#notes">Notes</a>
+</nav>
+
+<!-- ============ BANGKOK ============ -->
+<section class="leg" id="bangkok" data-city="bangkok">
+  <div class="leg-head">
+    <div class="stamp">BKK</div>
+    <div class="leg-title">Bangkok</div>
+  </div>
+  <div class="leg-sub">Aug 17 – Aug 20 · BTS/MRT by day, Grab after midnight</div>
+
+  <div class="day">
+    <div class="day-date">Mon · Aug 17</div>
+    <div class="day-title">Arrival</div>
+    <div class="slot"><span class="when">19:15</span><span class="what">Land, check in, freshen up</span></div>
+    <div class="slot"><span class="when">Night</span><span class="what"><b>Tichuca Rooftop Bar</b> — easy first-night intro, jungle-vibe rooftop, low pressure for the jetlagged</span></div>
+  </div>
+
+  <div class="day">
+    <div class="day-date">Tue · Aug 18</div>
+    <div class="day-title">Culture, adrenaline, big night</div>
+    <div class="slot"><span class="when">Morning</span><span class="what">Grand Palace → boat ride to <b>Wat Arun</b> (go early, before heat/crowds)</span></div>
+    <div class="slot"><span class="when">Afternoon</span><span class="what"><b>Top Kart</b> go-karting</span></div>
+    <div class="slot"><span class="when">Evening</span><span class="what"><b>Lebua Sky Bar</b> — iconic skyline sunset, group photo before the night gets loud</span></div>
+    <div class="slot"><span class="when">Night</span><span class="what"><b>ONYX Nightclub</b> — RCA's biggest club, built for a full group night out</span></div>
+  </div>
+
+  <div class="day">
+    <div class="day-date">Wed · Aug 19</div>
+    <div class="day-title">Recovery morning, last big night</div>
+    <div class="slot"><span class="when">Morning</span><span class="what">Shooting range</span></div>
+    <div class="slot"><span class="when">Afternoon</span><span class="what">MBK Center or Platinum Mall — group shopping, food court, easy pace after two heavy nights. Pool + late lunch works just as well if the group wants to just recover.</span></div>
+    <div class="slot"><span class="when">Evening</span><span class="what">Chill dinner — Sukhumvit or Silom street food</span></div>
+    <div class="slot"><span class="when">Night</span><span class="what"><b>Tribe Club</b> or <b>Aether Rooftop</b> — last Bangkok night; Tribe for pool/party energy, Aether for a higher-end rooftop close</span></div>
+  </div>
+
+  <div class="day">
+    <div class="day-date">Thu · Aug 20</div>
+    <div class="day-title">Depart for Phu Quoc</div>
+    <div class="slot"><span class="when">Morning</span><span class="what">Relax, checkout</span></div>
+  </div>
+</section>
+
+<div class="transfer">
+  <span class="plane">✈</span>
+  <span class="info">BKK → PQC <b>13:10 – 14:30</b></span>
+</div>
+
+<!-- ============ PHU QUOC ============ -->
+<section class="leg" id="phuquoc" data-city="phuquoc">
+  <div class="leg-head">
+    <div class="stamp">PQC</div>
+    <div class="leg-title">Phu Quoc</div>
+  </div>
+  <div class="leg-sub">Aug 20 – Aug 22 · Grab/taxi or villa transfers — limited public transport on the island</div>
+
+  <div class="day">
+    <div class="day-date">Thu · Aug 20</div>
+    <div class="day-title">Arrival</div>
+    <div class="slot"><span class="when">14:30</span><span class="what">Land → villa check-in & rest</span></div>
+    <div class="slot"><span class="when">Evening</span><span class="what"><b>Sunset Town</b> — explore the area, Kiss Bridge, beach clubs</span></div>
+    <div class="slot"><span class="when">Night</span><span class="what"><b>Kiss of the Sea Show</b></span></div>
+    <div class="slot"><span class="when">Late</span><span class="what"><b>Vui-Fest Night Market</b> — food + wandering after the show</span></div>
+  </div>
+
+  <div class="day">
+    <div class="day-date">Fri · Aug 21</div>
+    <div class="day-title">Full day — pick one</div>
+
+    <div class="option-card">
+      <span class="opt-label">Option 1 — VinWonders day</span>
+      <div class="slot"><span class="when">Morning</span><span class="what">Starfish Beach</span></div>
+      <div class="slot"><span class="when">Afternoon</span><span class="what">VinWonders & Vinpearl Safari, full day <span class="price">₹3,529</span></span></div>
+      <div class="slot"><span class="when">Evening</span><span class="what">Continue at VinWonders / dinner → back to villa</span></div>
+    </div>
+
+    <div class="option-card">
+      <span class="opt-label">Option 2 — Island adventure</span>
+      <div class="slot"><span class="when">Morning</span><span class="what">3-Island boat tour</span></div>
+      <div class="slot"><span class="when">Afternoon</span><span class="what">Aquatopia Water Park (combo with cable car) <span class="price">₹4,675</span></span></div>
+      <div class="slot"><span class="when">Evening</span><span class="what">Hon Thom Cable Car → sunset views</span></div>
+      <div class="slot"><span class="when">Night</span><span class="what">Dinner → back to villa</span></div>
+    </div>
+
+    <div class="flag">You've also got <b>OCSEN Beach Bar & Club</b> and the <b>Grand World Evening Tour</b> (₹3,529) as extras — either could replace an early villa return on Aug 21 night. But the flight out tomorrow is <b>09:10</b>, so a genuinely late night will hurt. Worth deciding as a group how hard to go.</div>
+  </div>
+
+  <div class="day">
+    <div class="day-date">Sat · Aug 22</div>
+    <div class="day-title">Fly to Hanoi</div>
+    <div class="slot"><span class="when">Early</span><span class="what">Villa checkout — pack the night before, it's a 09:10 flight</span></div>
+  </div>
+</section>
+
+<div class="transfer">
+  <span class="plane">✈</span>
+  <span class="info">PQC → HAN <b>09:10 – 11:15</b></span>
+</div>
+
+<!-- ============ HANOI ============ -->
+<section class="leg" id="hanoi" data-city="hanoi">
+  <div class="leg-head">
+    <div class="stamp">HAN</div>
+    <div class="leg-title">Hanoi</div>
+  </div>
+  <div class="leg-sub">Aug 22 – Aug 24 · Old Quarter is walkable — Grab for Tay Ho and the Halong transfer</div>
+
+  <div class="day">
+    <div class="day-date">Sat · Aug 22</div>
+    <div class="day-title">Arrival — more time than expected</div>
+    <div class="slot"><span class="when">11:15</span><span class="what">Land, check in — Old Quarter base recommended</span></div>
+    <div class="slot"><span class="when">Afternoon</span><span class="what">Old Quarter walk — Hoan Kiem Lake, street food crawl (pho, bun cha, banh mi)</span></div>
+    <div class="slot"><span class="when">Evening</span><span class="what"><b>Grand World Evening Tour</b> <span class="price">₹3,529</span> — Vietnam's "sleepless city," a change of pace from another bar night</span></div>
+    <div class="slot"><span class="when">Night</span><span class="what"><b>Ta Hien Street</b> ("Beer Street") — first taste of Hanoi nightlife, cheap and social</span></div>
+  </div>
+
+  <div class="day">
+    <div class="day-date">Sun · Aug 23</div>
+    <div class="day-title">Halong Bay day trip</div>
+    <div class="slot"><span class="when">Full day</span><span class="what"><b>Halong Bay tour</b> — ~10–12 hrs door-to-door, ~2.5 hrs each way. Cruise, caves, kayaking/swimming, lunch on board. Book a private/group tour in advance for 8 people.</span></div>
+    <div class="slot"><span class="when">~19:00</span><span class="what">Back in Hanoi — dinner, then last night on <b>Ta Hien</b> (Fri–Sun nights = pedestrian street closure in the Old Quarter, peak energy)</span></div>
+  </div>
+
+  <div class="day">
+    <div class="day-date">Mon · Aug 24</div>
+    <div class="day-title">Departure</div>
+    <div class="slot"><span class="when">Day</span><span class="what">Last Old Quarter walk, Train Street (check current access), final shopping, coffee</span></div>
+    <div class="slot"><span class="when">Evening</span><span class="what">Airport — flight <b>20:05 – 23:40</b> to BOM</span></div>
+  </div>
+</section>
+
+<div class="notes" id="notes">
+  <h2>Notes</h2>
+  <ul>
+    <li><b>Aug 21 night, Phu Quoc</b> — decide as a group how hard to go given the 09:10 flight the next morning.</li>
+    <li><b>Aug 22 early departure</b> — pack the night before (Aug 21), it's an early start.</li>
+    <li><b>Halong Bay</b> — book a private/group tour in advance rather than joining a shared one, for smoother logistics with 8 people.</li>
+    <li><b>Train Street</b> access in Hanoi has had intermittent restrictions — check current status on arrival.</li>
+  </ul>
+</div>
+
+<footer>Bangkok · Phu Quoc · Hanoi — Aug 2026</footer>
+
+</body>
+</html>
