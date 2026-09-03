@@ -51,6 +51,7 @@
       values: [2.56, 1.88, -2.20, 2.70, 3.51, 4.23, 4.25, 5.22, 4.94] },
 
     { key: "rev",       label: "Govt Rev Growth (CAGR)", shortLabel: "Govt revenue",     unit: "%", group: "growth", higherIsBetter: true,  outputGrowth: false,
+      caution: "Definition unclear and internally inconsistent. Central government gross tax revenue grew at roughly 11–12% a year in nominal terms between 2014-15 and 2024-25, against the 3.54% recorded here. The figure is only reconcilable if it is measured in real terms or covers a narrower revenue base than the other terms — in which case the terms are not comparable with each other.",
       blurb: "How fast the government's own income grew.",
       values: [null, null, 16.73, 6.16, 9.87, 5.13, 10.29, 10.76, 3.54] },
 
@@ -63,6 +64,7 @@
       values: [5.29, 4.28, 4.43, 6.54, 7.77, 6.91, 7.61, 7.86, 6.50] },
 
     { key: "stock",     label: "Stock Market (CAGR)",    shortLabel: "Stock market",     unit: "%", group: "growth", higherIsBetter: true,  outputGrowth: false,
+      caution: "Extremely sensitive to the exact start and end dates chosen. All three recorded values are defensible against Sensex history, but shifting the endpoints by a few months moves each of them by several percentage points, so the gaps between them should not be read as precise.",
       blurb: "What the market did. Only on record for the three most recent terms.",
       values: [null, null, null, null, null, null, 4.32, 17.03, 11.26] },
 
@@ -172,6 +174,7 @@
   };
 
   const SHOCK_CAVEATS = [
+    "One of the eleven indicators does not reconcile against public data. The government revenue series records 3.54% annual growth for 2014–25, against roughly 11–12% nominal growth in central government gross tax revenue over the same years. It is left in the score for transparency, but it moves the ranking and it should not.",
     "Shock impacts are estimates from published ranges, not measurements. Oil-shock and demonetisation drag estimates in particular vary widely between models.",
     "Handling a crisis well is itself a test of governance. Fully subtracting a shock credits a government for a recovery it may not have earned, and penalises none for a downturn it worsened.",
     "Several events are only partly exogenous. The 1991 balance-of-payments crisis followed a decade of domestic fiscal expansion; only the Gulf War oil spike is treated as external here.",

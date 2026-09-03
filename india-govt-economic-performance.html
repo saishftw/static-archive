@@ -221,20 +221,24 @@
       <ul class="list-disc pl-5 space-y-1 text-xs">
         <li>Manmohan Singh's 6.75% GDP CAGR sits squarely on the ~6.8% commonly reported for 2004–14 on the 2011–12 series.</li>
         <li>Modi's 5.99% is inside the 5.9–6.2% range usually cited for 2014–24 once the COVID contraction is included.</li>
+        <li>Nehru (5.01%), Indira Gandhi's second term (5.14%), Rajiv Gandhi (5.90%) and Vajpayee (6.16%) all land within a few tenths of the average of the published annual World Bank growth rates for those years.</li>
         <li>The debt figures of 73–79% of GDP are consistent with <em>general</em> government debt, which the IMF put at about 81% of GDP in 2023. They are far above central-government-only debt of roughly 57%, so the series is general government.</li>
-        <li>Desai's near-zero 0.09% GDP CAGR reflects the FY1979–80 contraction of about 5%, which is well documented and is one of the deepest in India's post-independence record.</li>
-        <li>The export and import shares tracking from roughly 4% of GDP in the early 1960s to a low-20s peak in the early 2010s matches the well-established post-1991 opening.</li>
+        <li>Desai's near-zero 0.09% GDP CAGR reflects the FY1979–80 contraction of about 5.2%, which is well documented and is one of the deepest in India's post-independence record.</li>
+        <li>Export and import shares, FDI and inflation all track the published World Bank series closely across every term, including the rise from roughly 4% of GDP in the early 1960s to a low-20s peak in the early 2010s.</li>
+        <li>The stock-market figures survive scrutiny once endpoint sensitivity is allowed for. Sensex at roughly 5,138 in May 2004 rising to about 24,217 in May 2014 gives a CAGR near 16.7%, close to the 17.03% recorded; May 2014 to 2024 gives about 11.8% against the 11.26% recorded.</li>
       </ul>
     </div>
     <div class="border-mid p-4">
       <p class="font-black uppercase text-xs tracking-wide mb-2">What to treat with caution</p>
       <ul class="list-disc pl-5 space-y-1 text-xs">
-        <li>Vajpayee's 6.16% GDP CAGR runs above the ~5.7–5.8% average usually quoted for 1998–2004; the gap is sensitive to whether calendar or fiscal years are used and to the exact endpoints.</li>
-        <li>Growth series straddle the 2011–12 base-year revision, whose back-series is genuinely contested. Figures either side of it are not perfectly comparable.</li>
-        <li>"Inflation" is not defined in the source. India has WPI, CPI-IW, combined CPI and the GDP deflator, and they can differ by several percentage points in the same year.</li>
+        <li><strong>The government revenue series does not reconcile.</strong> Central government gross tax revenue grew at roughly 11–12% a year in nominal terms from 2014-15 to 2024-25, rising from about ₹9 lakh crore to about ₹38 lakh crore. The 3.54% recorded here is far below that. It can only be squared if that figure is real rather than nominal, or covers a narrower revenue base — either of which would mean the terms are not measured on a common basis. Treat this indicator as unreliable.</li>
+        <li>Stock-market CAGRs move by several percentage points if the start or end date shifts by a few months. The three values are individually defensible; the gaps between them are not precise.</li>
+        <li>Indira Gandhi's first term (4.19%) and Rao's (6.40%) both run above the simple average of published annual growth rates for those years (roughly 3.3% and 5.5%). Compound rates measured between two endpoints legitimately differ from simple averages, but both windows begin in unusually weak years, which flatters the compound rate.</li>
+        <li>Growth series straddle the 2011–12 base-year revision, whose back-series is genuinely contested — the revision alone cut the measured 2004–12 average from about 7.75% to 6.7%. Figures either side of it are not perfectly comparable, and the IMF downgraded India's national accounts data quality rating over it.</li>
+        <li>"Inflation" is not defined in the source. India publishes WPI, CPI-IW, combined CPI and the GDP deflator, and in a bad year they can disagree by several percentage points.</li>
         <li>Three terms are absent entirely: Shastri (1964–66), V. P. Singh / Chandra Shekhar (1989–91) and Deve Gowda / Gujral (1996–98). Some of the worst shock years fall in those gaps and are therefore attributed to nobody.</li>
         <li>Desai's 16.73% revenue CAGR and −2.20% per-capita CAGR are two-year rates. They are arithmetically correct and analytically close to meaningless.</li>
-        <li>A full row-by-row reconciliation against the World Bank's World Development Indicators could not be completed here; the checks above are against published summaries rather than against the raw series.</li>
+        <li>Validation here is against published World Bank and RBI summaries and secondary compilations, not against a direct download of the raw series. It is a sanity check, not a full audit.</li>
       </ul>
     </div>
   </div>
@@ -245,6 +249,7 @@
   <div class="overflow-x-auto mt-4 border-mid">
     <table class="data mono" id="dataTable"></table>
   </div>
+  <div class="mt-6 border-mid p-4 bg-neutral-50" id="cautionNotes"></div>
 </section>
 
 <footer class="max-w-7xl mx-auto mono text-xs text-neutral-600 pb-10">
@@ -692,12 +697,19 @@ const LEADERBOARD = window.INDIA_DATA.LEADERBOARD;
 /* ---------- 9. Reference table ---------- */
 (function table() {
   const head = "<thead><tr><th>Government (Term)</th>" +
-    METRICS.map(m => "<th>" + m.label + "</th>").join("") + "</tr></thead>";
+    METRICS.map(m => "<th>" + m.label + (m.caution ? " ⚠" : "") + "</th>").join("") + "</tr></thead>";
   const rows = GOVTS.map((g, gi) =>
     "<tr><td>" + g + "</td>" +
     METRICS.map(m => "<td>" + fmt(m.values[gi]) + "</td>").join("") + "</tr>"
   ).join("");
   document.getElementById("dataTable").innerHTML = head + "<tbody>" + rows + "</tbody>";
+
+  const flagged = METRICS.filter(m => m.caution);
+  document.getElementById("cautionNotes").innerHTML = flagged.length === 0 ? "" :
+    "<p class='font-black uppercase text-xs tracking-wide mb-2'>⚠ Indicators that did not survive validation cleanly</p>" +
+    "<ul class='list-disc pl-5 space-y-2 text-xs'>" +
+    flagged.map(m => "<li><strong>" + m.label + "</strong> — " + m.caution + "</li>").join("") +
+    "</ul>";
 })();
 </script>
 </body>
