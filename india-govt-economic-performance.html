@@ -54,6 +54,9 @@
     Source figures as compiled from World Bank data on <span class="mono">Past Performance — AndhBhakt.org</span>.
   </p>
   <p class="mono text-xs mt-4 text-neutral-600">Dashes (—) mark indicators with no recorded observation for that term and are excluded from every chart and ranking.</p>
+  <a href="india-govt-wrapped.html" class="inline-block mt-6 border-heavy shadow-hard px-5 py-3 font-black uppercase tracking-wide text-sm md:text-base hover:translate-x-1 hover:translate-y-1 transition-transform" style="background:#1DB954;color:#000">
+    ▶ Open the Wrapped story deck
+  </a>
 </header>
 
 <section class="max-w-7xl mx-auto border-heavy shadow-hard panel p-4 md:p-8 mb-8">
@@ -139,7 +142,106 @@
 </section>
 
 <section class="max-w-7xl mx-auto border-heavy shadow-hard panel p-4 md:p-8 mb-8">
-  <h2 class="text-2xl md:text-4xl font-black">6 / COMPLETE DATA REFERENCE</h2>
+  <h2 class="text-2xl md:text-4xl font-black">6 / OVERALL LEADERBOARD</h2>
+  <p class="text-sm mt-2 mb-4 max-w-3xl">
+    Every indicator is normalised to a 0–1 scale within itself (0 = weakest government on record for
+    that indicator, 1 = strongest), with inflation and debt inverted so that higher always means
+    better. A government's <strong>raw score</strong> is the average of its normalised scores across
+    the indicators it has an observation for, scaled to 100. All eleven indicators are weighted
+    equally — a deliberate choice, and an arguable one.
+  </p>
+  <p class="text-sm mb-4 max-w-3xl">
+    The <strong>shock-adjusted score</strong> repeats the exercise on a counterfactual in which the
+    average annual drag from documented <em>exogenous</em> shocks is added back to the four
+    real-output growth series (GDP, GDP per capita, manufacturing, services). Policy-induced events —
+    demonetisation, the GST rollout, the Pokhran-II sanctions — are deliberately <em>not</em> adjusted
+    away, because the consequences of a government's own choices are exactly what this is measuring.
+  </p>
+  <div id="leaderboardChart" class="chart border-mid" style="height:600px"></div>
+  <div class="overflow-x-auto mt-6 border-mid">
+    <table class="data mono" id="leaderTable"></table>
+  </div>
+  <div class="mt-6 border-mid p-4 bg-neutral-50">
+    <p class="font-black text-sm uppercase tracking-wide">Read this before quoting the ranking</p>
+    <ul class="text-xs mt-2 space-y-2 list-disc pl-5" id="caveatList"></ul>
+    <p class="text-xs mt-3">
+      <strong>Unequal coverage is the single biggest weakness of this ranking.</strong> Manmohan
+      Singh's term has all eleven indicators on record; Nehru's and Indira Gandhi's first term have
+      seven. Averaging over whatever happens to exist means the governments are not being scored on
+      the same exam. The stock-market indicator exists for only three terms and is won decisively by
+      one of them, which alone moves the top of the table.
+    </p>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto border-heavy shadow-hard panel p-4 md:p-8 mb-8">
+  <h2 class="text-2xl md:text-4xl font-black">7 / THE SHOCK LEDGER</h2>
+  <p class="text-sm mt-2 mb-4 max-w-3xl">
+    The full list of events behind the adjustment, published so the choices can be argued with.
+    Bars show the estimated percentage points of real GDP growth lost, spread across the length of
+    each term. Green marks a <em>tailwind</em> — the 2014–16 collapse in crude prices was a genuine
+    windfall for a large net oil importer and is counted as such. Rows marked
+    <span class="mono">POLICY</span> are shown but excluded from the adjustment.
+  </p>
+  <div id="shockChart" class="chart border-mid" style="height:620px"></div>
+  <div class="overflow-x-auto mt-6 border-mid">
+    <table class="data mono" id="shockTable"></table>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto border-heavy shadow-hard panel p-4 md:p-8 mb-8">
+  <h2 class="text-2xl md:text-4xl font-black">8 / BENCHMARKED AGAINST THE WORLD</h2>
+  <p class="text-sm mt-2 mb-4 max-w-3xl">
+    A second, independent way to strip out global conditions: compare each government's real GDP
+    growth to average world growth over the same years. Growing at 6% while the world grew at 5% is
+    a very different achievement from growing at 6% while the world grew at 2.5%. This measure needs
+    no estimate of any individual shock — global downturns are already inside the benchmark — which
+    makes it a useful cross-check on the shock adjustment above.
+  </p>
+  <div id="worldChart" class="chart border-mid" style="height:560px"></div>
+  <p class="mono text-xs mt-4 text-neutral-600">
+    World growth figures are approximate period averages derived from World Bank and IMF world
+    aggregates. They are indicative, not precise, and should be read at the level of "strong tailwind
+    / strong headwind" rather than to two decimal places.
+  </p>
+</section>
+
+<section class="max-w-7xl mx-auto border-heavy shadow-hard panel p-4 md:p-8 mb-8">
+  <h2 class="text-2xl md:text-4xl font-black">9 / DATA PROVENANCE &amp; VALIDATION</h2>
+  <p class="text-sm mt-2 mb-4 max-w-3xl">
+    The indicator figures are reproduced from a compilation published on
+    <span class="mono">AndhBhakt.org</span>, itself sourced from World Bank data. That site publishes
+    from an explicitly political standpoint. That does not make its numbers wrong, but it does mean
+    they should be treated as a claim to be checked rather than as a primary source — which is why
+    the checks below are published alongside them.
+  </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+    <div class="border-mid p-4">
+      <p class="font-black uppercase text-xs tracking-wide mb-2">What checks out</p>
+      <ul class="list-disc pl-5 space-y-1 text-xs">
+        <li>Manmohan Singh's 6.75% GDP CAGR sits squarely on the ~6.8% commonly reported for 2004–14 on the 2011–12 series.</li>
+        <li>Modi's 5.99% is inside the 5.9–6.2% range usually cited for 2014–24 once the COVID contraction is included.</li>
+        <li>The debt figures of 73–79% of GDP are consistent with <em>general</em> government debt, which the IMF put at about 81% of GDP in 2023. They are far above central-government-only debt of roughly 57%, so the series is general government.</li>
+        <li>Desai's near-zero 0.09% GDP CAGR reflects the FY1979–80 contraction of about 5%, which is well documented and is one of the deepest in India's post-independence record.</li>
+        <li>The export and import shares tracking from roughly 4% of GDP in the early 1960s to a low-20s peak in the early 2010s matches the well-established post-1991 opening.</li>
+      </ul>
+    </div>
+    <div class="border-mid p-4">
+      <p class="font-black uppercase text-xs tracking-wide mb-2">What to treat with caution</p>
+      <ul class="list-disc pl-5 space-y-1 text-xs">
+        <li>Vajpayee's 6.16% GDP CAGR runs above the ~5.7–5.8% average usually quoted for 1998–2004; the gap is sensitive to whether calendar or fiscal years are used and to the exact endpoints.</li>
+        <li>Growth series straddle the 2011–12 base-year revision, whose back-series is genuinely contested. Figures either side of it are not perfectly comparable.</li>
+        <li>"Inflation" is not defined in the source. India has WPI, CPI-IW, combined CPI and the GDP deflator, and they can differ by several percentage points in the same year.</li>
+        <li>Three terms are absent entirely: Shastri (1964–66), V. P. Singh / Chandra Shekhar (1989–91) and Deve Gowda / Gujral (1996–98). Some of the worst shock years fall in those gaps and are therefore attributed to nobody.</li>
+        <li>Desai's 16.73% revenue CAGR and −2.20% per-capita CAGR are two-year rates. They are arithmetically correct and analytically close to meaningless.</li>
+        <li>A full row-by-row reconciliation against the World Bank's World Development Indicators could not be completed here; the checks above are against published summaries rather than against the raw series.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto border-heavy shadow-hard panel p-4 md:p-8 mb-8">
+  <h2 class="text-2xl md:text-4xl font-black">10 / COMPLETE DATA REFERENCE</h2>
   <div class="overflow-x-auto mt-4 border-mid">
     <table class="data mono" id="dataTable"></table>
   </div>
@@ -440,7 +542,154 @@ const MODERN_COLORS = MODERN_IDX.map(i => GOV_COLOR[i]);
   }), CONFIG);
 })();
 
-/* ---------- 6. Reference table ---------- */
+/* ---------- 6. Overall leaderboard ---------- */
+const LEADERBOARD = window.INDIA_DATA.LEADERBOARD;
+
+(function leaderboardChart() {
+  const rows = LEADERBOARD.slice().sort((a, b) => b.adjScore - a.adjScore);
+  const labels = rows.map(r => r.short + " " + r.term);
+
+  Plotly.newPlot("leaderboardChart", [
+    {
+      type: "bar",
+      orientation: "h",
+      name: "Raw score",
+      x: rows.map(r => r.rawScore),
+      y: labels,
+      marker: { color: "#ffffff", line: { color: "#000", width: 2 } },
+      hovertemplate: "%{y}<br>Raw score: %{x:.1f} / 100<extra></extra>"
+    },
+    {
+      type: "bar",
+      orientation: "h",
+      name: "Shock-adjusted score",
+      x: rows.map(r => r.adjScore),
+      y: labels,
+      marker: { color: rows.map(r => r.color), line: { color: "#000", width: 2 } },
+      hovertemplate: "%{y}<br>Shock-adjusted: %{x:.1f} / 100<extra></extra>"
+    }
+  ], Object.assign({}, BASE_LAYOUT, {
+    title: { text: "Composite score out of 100 — ordered by shock-adjusted score" },
+    barmode: "group",
+    bargap: 0.3,
+    xaxis: Object.assign({}, AXIS_STYLE, { title: { text: "Composite score (100 = best possible)" }, range: [0, 100] }),
+    yaxis: { automargin: true, showgrid: false, autorange: "reversed" },
+    legend: { orientation: "h", y: -0.16 },
+    margin: { l: 200, r: 30, t: 50, b: 100 }
+  }), CONFIG);
+})();
+
+(function leaderTable() {
+  const rows = LEADERBOARD.slice().sort((a, b) => b.adjScore - a.adjScore);
+  const head = "<thead><tr>" +
+    ["#", "Government (Term)", "Raw score", "Shock-adj. score", "Rank change", "Avg shock drag (pp/yr)",
+     "GDP CAGR", "Adj. GDP CAGR", "vs world growth", "Indicators won", "Coverage"]
+      .map(h => "<th>" + h + "</th>").join("") + "</tr></thead>";
+
+  const body = rows.map(r => {
+    const move = r.rankChange > 0 ? "▲ " + r.rankChange
+      : r.rankChange < 0 ? "▼ " + Math.abs(r.rankChange) : "–";
+    const flag = r.shortTerm ? " <span title='Term too short for a meaningful CAGR'>⚠</span>" : "";
+    return "<tr>" +
+      "<td style='text-align:left'>" + r.adjRank + "</td>" +
+      "<td>" + r.name + " (" + r.term + ")" + flag + "</td>" +
+      "<td>" + r.rawScore.toFixed(1) + "</td>" +
+      "<td><strong>" + r.adjScore.toFixed(1) + "</strong></td>" +
+      "<td>" + move + "</td>" +
+      "<td>" + fmtSigned(r.drag) + "</td>" +
+      "<td>" + fmt(r.adjustedGdp - r.drag) + "</td>" +
+      "<td>" + fmt(r.adjustedGdp) + "</td>" +
+      "<td>" + fmtSigned(r.excessOverWorld) + " pp</td>" +
+      "<td>" + r.wins + " / 11</td>" +
+      "<td>" + r.coverage + " / 11</td>" +
+      "</tr>";
+  }).join("");
+
+  document.getElementById("leaderTable").innerHTML = head + "<tbody>" + body + "</tbody>";
+
+  document.getElementById("caveatList").innerHTML =
+    window.INDIA_DATA.SHOCK_CAVEATS.map(c => "<li>" + c + "</li>").join("");
+})();
+
+/* ---------- 7. Shock ledger ---------- */
+(function shockChart() {
+  const SHOCKS = window.INDIA_DATA.SHOCKS;
+  const ordered = GOVERNMENTS.map(g => g.id);
+  const items = SHOCKS.slice().sort((a, b) => ordered.indexOf(a.govt) - ordered.indexOf(b.govt));
+
+  const labels = items.map(s => {
+    const g = GOVERNMENTS.find(x => x.id === s.govt);
+    return g.short + " · " + s.name + " (" + s.years + ")";
+  });
+
+  Plotly.newPlot("shockChart", [{
+    type: "bar",
+    orientation: "h",
+    x: items.map(s => s.ppLost),
+    y: labels,
+    marker: {
+      // Tailwinds (negative drag) read green; policy-induced events are greyed
+      // out because they are shown but not adjusted for.
+      color: items.map(s => !s.adjust ? "#a3a3a3" : (s.ppLost < 0 ? "#15803d" : "#b91c1c")),
+      line: { color: "#000", width: 1 }
+    },
+    customdata: items.map(s => s.adjust ? "Exogenous — adjusted for" : "Policy-induced — NOT adjusted for"),
+    hovertemplate: "%{y}<br>Estimated impact: %{x:+.2f} pp of GDP growth<br>%{customdata}<extra></extra>"
+  }], Object.assign({}, BASE_LAYOUT, {
+    title: { text: "Estimated GDP growth impact (pp). Red = headwind, green = tailwind, grey = policy-induced (not adjusted)" },
+    xaxis: Object.assign({}, AXIS_STYLE, { title: { text: "Percentage points of real GDP growth" }, zerolinewidth: 2 }),
+    yaxis: { automargin: true, showgrid: false, autorange: "reversed", tickfont: { size: 9 } },
+    margin: { l: 330, r: 30, t: 60, b: 80 }
+  }), CONFIG);
+
+  const head = "<thead><tr>" + ["Government", "Shock", "Years", "Est. GDP impact (pp)", "Classification", "Used in adjustment"]
+    .map(h => "<th>" + h + "</th>").join("") + "</tr></thead>";
+  const body = items.map(s => {
+    const g = GOVERNMENTS.find(x => x.id === s.govt);
+    return "<tr><td>" + g.short + " (" + g.term + ")</td>" +
+      "<td style='text-align:left'>" + s.name + "</td>" +
+      "<td>" + s.years + "</td>" +
+      "<td>" + fmtSigned(s.ppLost) + "</td>" +
+      "<td>" + (s.kind === "policy-induced" ? "POLICY" : "EXOGENOUS") + "</td>" +
+      "<td>" + (s.adjust ? "yes" : "no") + "</td></tr>";
+  }).join("");
+  document.getElementById("shockTable").innerHTML = head + "<tbody>" + body + "</tbody>";
+})();
+
+/* ---------- 8. India vs world growth ---------- */
+(function worldChart() {
+  const rows = LEADERBOARD;
+  const labels = rows.map(r => r.short + "<br>" + r.term);
+
+  Plotly.newPlot("worldChart", [
+    {
+      type: "bar",
+      name: "India real GDP CAGR",
+      x: labels,
+      y: rows.map(r => r.adjustedGdp - r.drag),
+      marker: { color: rows.map(r => r.color), line: { color: "#000", width: 1 } },
+      hovertemplate: "%{x}<br>India: %{y:.2f}%<extra></extra>"
+    },
+    {
+      type: "scatter",
+      mode: "lines+markers",
+      name: "Average world GDP growth",
+      x: labels,
+      y: rows.map(r => r.worldGrowth),
+      line: { color: "#000", width: 2, dash: "dot" },
+      marker: { size: 10, symbol: "diamond", color: "#000" },
+      hovertemplate: "%{x}<br>World: %{y:.2f}%<extra></extra>"
+    }
+  ], Object.assign({}, BASE_LAYOUT, {
+    title: { text: "India's growth against the global backdrop of the same years" },
+    xaxis: { automargin: true, showgrid: false, tickfont: { size: 9 } },
+    yaxis: Object.assign({}, AXIS_STYLE, { title: { text: "Real GDP growth (%)" }, ticksuffix: "%" }),
+    legend: { orientation: "h", y: -0.2 },
+    margin: { l: 70, r: 30, t: 50, b: 110 }
+  }), CONFIG);
+})();
+
+/* ---------- 9. Reference table ---------- */
 (function table() {
   const head = "<thead><tr><th>Government (Term)</th>" +
     METRICS.map(m => "<th>" + m.label + "</th>").join("") + "</tr></thead>";
