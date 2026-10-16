@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>India Economy Wrapped — 1960 to 2025</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="india-govt-data.js"></script>
+
+<style>
+  /* ==========================================================================
+     India Economy Wrapped
+     A Spotify-Wrapped-styled story deck: 1080x1920 cards, tap to advance,
+     Instagram-story progress bars, one idea per card, everything readable at
+     arm's length on a phone. Cards are laid out at true export resolution and
+     scaled down with a transform, so what you see is exactly what downloads.
+     ========================================================================== */
+
+  :root {
+    --card-w: 1080;
+    --card-h: 1920;
+    --scale: 0.4;
+
+    /* Spotify Wrapped-ish palette */
+    --sp-green:  #1DB954;
+    --sp-lime:   #19E68C;
+    --sp-cyan:   #25D1DA;
+    --sp-blue:   #0D73EC;
+    --sp-purple: #8400E7;
+    --sp-pink:   #F037A5;
+    --sp-blush:  #FFD2D7;
+    --sp-orange: #FF6437;
+    --sp-yellow: #FFC864;
+    --sp-black:  #121212;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: #000;
+    color: #fff;
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #stage {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #deck {
+    position: relative;
+    width: calc(var(--card-w) * 1px);
+    height: calc(var(--card-h) * 1px);
+    transform: scale(var(--scale));
+    transform-origin: center center;
+    flex: 0 0 auto;
+  }
+
+  .card {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    padding: 150px 90px 230px;
+    overflow: hidden;
+    background: var(--sp-black);
+  }
+  .card.active { display: flex; }
+
+  /* Wrapped's signature soft colour wash behind the type. */
+  .card::before {
+    content: "";
+    position: absolute;
+    width: 1400px; height: 1400px;
+    left: -320px; top: -420px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, var(--wash1) 0%, transparent 62%);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    width: 1200px; height: 1200px;
+    right: -380px; bottom: -380px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 60% 60%, var(--wash2) 0%, transparent 62%);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  .card > * { position: relative; z-index: 2; }
+
+  .eyebrow {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 34px;
+  }
+
+  .headline {
+    font-size: 96px;
+    font-weight: 900;
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+  }
+  .headline.sm { font-size: 74px; }
+
+  .bignum {
+    font-size: 250px;
+    font-weight: 900;
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+  }
+  .bignum.sm { font-size: 190px; }
+
+  .sub {
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1.3;
+    opacity: 0.92;
+  }
+  .sub.tight { font-size: 32px; }
+
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    line-height: 1.45;
+    opacity: 0.7;
+  }
+
+  .spacer { flex: 1 1 auto; }
+
+  /* --- Wrapped's numbered "top 5" list ------------------------------------ */
+  .toplist { display: flex; flex-direction: column; gap: 30px; }
+  .toprow { display: flex; align-items: baseline; gap: 28px; }
+  .toprank {
+    font-size: 54px; font-weight: 900; width: 66px; flex: 0 0 66px;
+    letter-spacing: -0.04em; opacity: 0.85;
+  }
+  .topmain { flex: 1 1 auto; min-width: 0; }
+  .topname {
+    font-size: 50px; font-weight: 900; letter-spacing: -0.02em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .topmeta { font-size: 27px; font-weight: 500; opacity: 0.72; margin-top: 4px; }
+  .topval { font-size: 46px; font-weight: 900; letter-spacing: -0.02em; }
+
+  /* --- Bar list ----------------------------------------------------------- */
+  .bars { display: flex; flex-direction: column; gap: 22px; }
+  .barrow { display: flex; align-items: center; gap: 22px; }
+  .barname { width: 250px; flex: 0 0 250px; font-size: 30px; font-weight: 700; }
+  .bartrack { flex: 1 1 auto; height: 42px; background: rgba(255,255,255,0.14); border-radius: 21px; overflow: hidden; }
+  .barfill { height: 100%; border-radius: 21px; }
+  .barval { width: 150px; flex: 0 0 150px; text-align: right; font-size: 30px; font-weight: 900; }
+
+  /* --- Sticker / pill ----------------------------------------------------- */
+  .pill {
+    display: inline-block;
+    padding: 16px 34px;
+    border-radius: 999px;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 21px;
+    line-height: 1.5;
+    opacity: 0.68;
+  }
+
+  .footer-note {
+    position: absolute;
+    left: 90px; right: 90px; bottom: 120px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    line-height: 1.45;
+    opacity: 0.62;
+    z-index: 2;
+  }
+
+  /* --- Instagram-style progress bars -------------------------------------- */
+  #progress {
+    position: absolute;
+    top: 54px; left: 60px; right: 60px;
+    display: flex; gap: 10px;
+    z-index: 20;
+  }
+  #progress .seg {
+    flex: 1 1 0;
+    height: 10px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.3);
+  }
+  #progress .seg.done { background: rgba(255,255,255,0.95); }
+
+  #brand {
+    position: absolute;
+    top: 92px; left: 90px;
+    z-index: 20;
+    font-size: 26px; font-weight: 900;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  /* --- Tap zones ---------------------------------------------------------- */
+  .tapzone { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 15; cursor: pointer; }
+  #tapPrev { left: 0; }
+  #tapNext { right: 0; }
+
+  /* --- Chrome outside the card ------------------------------------------- */
+  #chrome {
+    position: fixed;
+    bottom: 14px; left: 0; right: 0;
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+    z-index: 60;
+    font-size: 13px;
+    flex-wrap: wrap;
+    padding: 0 10px;
+  }
+  #chrome button, #chrome a {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 800;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 0;
+    background: #fff; color: #000;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  #chrome button.ghost { background: rgba(255,255,255,0.16); color: #fff; }
+  #chrome .hint { color: rgba(255,255,255,0.5); font-size: 12px; width: 100%; text-align: center; }
+
+  @media (max-width: 640px) {
+    #chrome .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div id="deck">
+    <div id="progress"></div>
+    <div id="brand">India Wrapped</div>
+    <div id="cards"></div>
+    <div class="tapzone" id="tapPrev"></div>
+    <div class="tapzone" id="tapNext"></div>
+  </div>
+</div>
+
+<div id="chrome">
+  <button class="ghost" id="btnPrev">‹ Prev</button>
+  <button class="ghost" id="btnNext">Next ›</button>
+  <button id="btnSave">Download this card</button>
+  <a href="india-govt-economic-performance.html">See the full report</a>
+  <div class="hint">Tap the left or right half of the card, or use the arrow keys. Cards are 1080×1920 — Instagram Stories size.</div>
+</div>
+
+<script>
+const D = window.INDIA_DATA;
+const { GOVERNMENTS, METRICS, LEADERBOARD, SHOCKS, fmt, fmtSigned } = D;
+
+/* ---------------------------------------------------------------------------
+   Palettes. Each card gets a Wrapped-style duotone: a background, a foreground
+   accent for the numbers, and two soft colour washes behind the type.
+   --------------------------------------------------------------------------- */
+const THEMES = [
+  { bg: "#121212", fg: "#1DB954", text: "#ffffff", wash1: "rgba(29,185,84,0.55)",  wash2: "rgba(37,209,218,0.35)" },
+  { bg: "#0D0D0D", fg: "#FFC864", text: "#ffffff", wash1: "rgba(255,200,100,0.45)", wash2: "rgba(255,100,55,0.35)" },
+  { bg: "#8400E7", fg: "#FFD2D7", text: "#ffffff", wash1: "rgba(240,55,165,0.55)",  wash2: "rgba(13,115,236,0.45)" },
+  { bg: "#19E68C", fg: "#121212", text: "#121212", wash1: "rgba(255,255,255,0.5)",  wash2: "rgba(13,115,236,0.28)" },
+  { bg: "#0D73EC", fg: "#FFC864", text: "#ffffff", wash1: "rgba(37,209,218,0.5)",   wash2: "rgba(132,0,231,0.45)" },
+  { bg: "#FF6437", fg: "#121212", text: "#121212", wash1: "rgba(255,200,100,0.6)",  wash2: "rgba(240,55,165,0.35)" },
+  { bg: "#121212", fg: "#25D1DA", text: "#ffffff", wash1: "rgba(37,209,218,0.5)",   wash2: "rgba(29,185,84,0.3)" },
+  { bg: "#F037A5", fg: "#FFD2D7", text: "#ffffff", wash1: "rgba(255,210,215,0.5)",  wash2: "rgba(132,0,231,0.45)" },
+  { bg: "#FFD2D7", fg: "#8400E7", text: "#121212", wash1: "rgba(255,255,255,0.6)",  wash2: "rgba(240,55,165,0.35)" },
+  { bg: "#121212", fg: "#FF6437", text: "#ffffff", wash1: "rgba(255,100,55,0.45)",  wash2: "rgba(255,200,100,0.3)" },
+  { bg: "#25D1DA", fg: "#121212", text: "#121212", wash1: "rgba(255,255,255,0.55)", wash2: "rgba(13,115,236,0.3)" },
+  { bg: "#121212", fg: "#8400E7", text: "#ffffff", wash1: "rgba(132,0,231,0.55)",   wash2: "rgba(240,55,165,0.35)" },
+  { bg: "#1DB954", fg: "#121212", text: "#121212", wash1: "rgba(255,255,255,0.5)",  wash2: "rgba(25,230,140,0.5)" }
+];
+
+/* --------------------------------------------------------------------------- */
+const byRawRank  = LEADERBOARD.slice().sort((a, b) => a.rawRank - b.rawRank);
+const byAdjRank  = LEADERBOARD.slice().sort((a, b) => a.adjRank - b.adjRank);
+const gdpMetric  = METRICS.find(m => m.key === "gdp");
+const inflation  = METRICS.find(m => m.key === "inflation");
+const exportsM   = METRICS.find(m => m.key === "exports");
+const totalYears = GOVERNMENTS.reduce((a, g) => a + g.years, 0);
+const biggestMover = LEADERBOARD.slice().sort((a, b) => b.rankChange - a.rankChange)[0];
+const totalShockPP = SHOCKS.filter(s => s.adjust && s.ppLost > 0).reduce((a, s) => a + s.ppLost, 0);
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+/* Ranked "top 5" list, exactly the shape Wrapped uses for top artists. */
+function topList(rows, valueFn, metaFn) {
+  return '<div class="toplist">' + rows.map((r, i) =>
+    '<div class="toprow">' +
+      '<div class="toprank">' + (i + 1) + '</div>' +
+      '<div class="topmain">' +
+        '<div class="topname">' + esc(r.name) + '</div>' +
+        '<div class="topmeta">' + esc(metaFn(r)) + '</div>' +
+      '</div>' +
+      '<div class="topval">' + esc(valueFn(r)) + '</div>' +
+    '</div>'
+  ).join('') + '</div>';
+}
+
+/* Horizontal bar list, scaled against the largest absolute value shown. */
+function barList(items, accent) {
+  const max = Math.max.apply(null, items.map(i => Math.abs(i.value)));
+  return '<div class="bars">' + items.map(i =>
+    '<div class="barrow">' +
+      '<div class="barname">' + esc(i.label) + '</div>' +
+      '<div class="bartrack"><div class="barfill" style="width:' +
+        (max === 0 ? 0 : Math.max(2, Math.abs(i.value) / max * 100)) + '%;background:' +
+        (i.color || accent) + '"></div></div>' +
+      '<div class="barval">' + esc(i.display) + '</div>' +
+    '</div>'
+  ).join('') + '</div>';
+}
+
+/* ---------------------------------------------------------------------------
+   The deck. Copy is written in Wrapped's voice — second person, present tense,
+   a little cheeky — but every number on screen is the same number that appears
+   in the full report, and the honesty cards are non-optional parts of the deck.
+   --------------------------------------------------------------------------- */
+const CARDS = [];
+
+/* 1 — Cover */
+CARDS.push({
+  html:
+    '<div class="eyebrow">2025 Edition</div>' +
+    '<div class="headline">India<br>Economy<br>Wrapped</div>' +
+    '<div class="spacer"></div>' +
+    '<div class="sub">Sixty-five years. Nine governments.<br>Eleven indicators. One very long playlist.</div>' +
+    '<div style="margin-top:44px"><span class="pill" style="background:var(--fg);color:var(--bg)">Tap to start</span></div>'
+});
+
+/* 2 — The "you listened for N minutes" opener */
+CARDS.push({
+  html:
+    '<div class="eyebrow">You listened for</div>' +
+    '<div class="bignum" style="color:var(--fg)">' + totalYears + '</div>' +
+    '<div class="headline sm" style="margin-top:18px">years of<br>Indian economy</div>' +
+    '<div class="spacer"></div>' +
+    '<div class="sub">That is ' + GOVERNMENTS.length + ' governments, ' + METRICS.length +
+      ' indicators and ' + SHOCKS.length + ' economic shocks — from the 1962 war to the pandemic.</div>' +
+    '<div class="footer-note">Terms run 1960–2025. Growth series are compound annual growth rates over each term; shares and levels are term averages.</div>'
+});
+
+/* 3 — Top 5, the signature Wrapped card */
+CARDS.push({
+  html:
+    '<div class="eyebrow">Your Top Governments</div>' +
+    '<div class="headline sm" style="margin-bottom:56px">Ranked on all<br>11 indicators</div>' +
+    topList(byRawRank.slice(0, 5), r => r.rawScore.toFixed(0), r => r.term + " · " + r.wins + " No.1 finishes") +
+    '<div class="spacer"></div>' +
+    '<div class="note">Score out of 100. Each indicator is normalised 0–1 within itself, inflation and debt inverted, then averaged. Every indicator weighted equally.</div>'
+});
+
+/* 4 — The number one reveal */
+CARDS.push({
+  html:
+    '<div class="eyebrow">Your No.1</div>' +
+    '<div class="headline" style="color:var(--fg)">' + esc(byRawRank[0].name) + '</div>' +
+    '<div class="sub" style="margin-top:26px">' + esc(byRawRank[0].term) + '</div>' +
+    '<div class="spacer"></div>' +
+    '<div class="bignum sm" style="color:var(--fg)">' + byRawRank[0].rawScore.toFixed(0) + '</div>' +
+    '<div class="sub" style="margin-top:14px">out of 100 — and the top performer on<br>' +
+      byRawRank[0].wins + ' of the ' + METRICS.length + ' indicators.</div>' +
+    '<div style="margin-top:40px"><span class="pill" style="background:var(--fg);color:var(--bg)">' +
+      esc(byRawRank[0].winLabels.slice(0, 3).join(" · ")) + '</span></div>'
+});
+
+/* 5 — Top track: fastest growth */
+(function () {
+  const best = LEADERBOARD.reduce((a, b) => (b.adjustedGdp - b.drag) > (a.adjustedGdp - a.drag) ? b : a);
+  CARDS.push({
+    html:
+      '<div class="eyebrow">Your Top Track</div>' +
+      '<div class="headline sm">Fastest the<br>economy ever<br>compounded</div>' +
+      '<div class="spacer"></div>' +
+      '<div class="bignum" style="color:var(--fg)">' + (best.adjustedGdp - best.drag).toFixed(2) + '%</div>' +
+      '<div class="sub" style="margin-top:20px"><strong>' + esc(best.name) + '</strong><br>' +
+        esc(best.term) + ' · real GDP, compounded every year</div>' +
+      '<div class="footer-note">Independent summaries of 2004–14 on the 2011–12 GDP series put average growth at roughly 6.8%, which is where this figure sits.</div>'
+  });
+})();
+
+/* 6 — Growth, all nine, as bars */
+CARDS.push({
+  html:
+    '<div class="eyebrow">On Repeat · GDP Growth</div>' +
+    '<div class="headline sm" style="margin-bottom:46px">Every government,<br>every growth rate</div>' +
+    barList(GOVERNMENTS.map((g, i) => ({
+      label: g.short,
+      value: gdpMetric.values[i],
+      display: fmt(gdpMetric.values[i]),
+      color: g.color
+    }))) +
+    '<div class="spacer"></div>' +
+    '<div class="note">Morarji Desai\'s 0.09% is a two-year rate wrecked by the 1979–80 oil shock and drought, when output fell about 5%. Two-year compound rates are not comparable with ten-year ones.</div>'
+});
+
+/* 7 — Exports: the trajectory */
+CARDS.push({
+  html:
+    '<div class="eyebrow">Your Biggest Glow-Up</div>' +
+    '<div class="headline sm">India opened<br>up to the world</div>' +
+    '<div class="spacer"></div>' +
+    '<div style="display:flex;align-items:baseline;gap:26px">' +
+      '<div class="bignum sm" style="opacity:0.55">' + exportsM.values[0].toFixed(1) + '%</div>' +
+      '<div class="headline sm" style="opacity:0.55">→</div>' +
+      '<div class="bignum sm" style="color:var(--fg)">' + Math.max.apply(null, exportsM.values.filter(v => v !== null)).toFixed(1) + '%</div>' +
+    '</div>' +
+    '<div class="sub" style="margin-top:24px">Exports as a share of GDP, from Nehru\'s term to their peak under Manmohan Singh.</div>' +
+    '<div class="footer-note">This is a ramp, not a step. It climbs steadily from the 1991 reforms onward — no single government owns it.</div>'
+});
+
+/* 8 — Inflation: the one you feel */
+(function () {
+  const vals = inflation.values;
+  const lowIdx = vals.indexOf(Math.min.apply(null, vals.filter(v => v !== null)));
+  const highIdx = vals.indexOf(Math.max.apply(null, vals.filter(v => v !== null)));
+  CARDS.push({
+    html:
+      '<div class="eyebrow">The One You Actually Feel</div>' +
+      '<div class="headline sm" style="margin-bottom:50px">Inflation</div>' +
+      '<div class="sub" style="opacity:0.75">Calmest prices</div>' +
+      '<div class="bignum sm" style="color:var(--fg)">' + vals[lowIdx].toFixed(2) + '%</div>' +
+      '<div class="sub" style="margin-top:10px">' + esc(GOVERNMENTS[lowIdx].name) + ' · ' + esc(GOVERNMENTS[lowIdx].term) + '</div>' +
+      '<div style="height:56px"></div>' +
+      '<div class="sub" style="opacity:0.75">Worst</div>' +
+      '<div class="bignum sm">' + vals[highIdx].toFixed(2) + '%</div>' +
+      '<div class="sub" style="margin-top:10px">' + esc(GOVERNMENTS[highIdx].name) + ' · ' + esc(GOVERNMENTS[highIdx].term) + '</div>' +
+      '<div class="footer-note">The source does not say which inflation measure this is. India publishes WPI, CPI-IW, combined CPI and the GDP deflator, and in a bad year they can disagree by several points.</div>'
+  });
+})();
+
+/* 9 — Interruption: the shock card */
+CARDS.push({
+  html:
+    '<div class="eyebrow">Your Playback Was Interrupted</div>' +
+    '<div class="headline sm">Wars. Droughts.<br>Oil shocks.<br>A pandemic.</div>' +
+    '<div class="spacer"></div>' +
+    '<div class="bignum sm" style="color:var(--fg)">' + totalShockPP.toFixed(0) + '</div>' +
+    '<div class="sub" style="margin-top:18px">percentage points of GDP growth<br>estimated lost to shocks<br>nobody in office chose.</div>' +
+    '<div style="margin-top:36px"><span class="pill" style="background:var(--fg);color:var(--bg)">' + SHOCKS.length + ' events logged</span></div>' +
+    '<div class="footer-note">Counted symmetrically: the 2014–16 oil price collapse was a windfall for a big oil importer, so it is logged as a tailwind, not ignored.</div>'
+});
+
+/* 10 — Who got hit hardest */
+CARDS.push({
+  html:
+    '<div class="eyebrow">Hardest Difficulty Setting</div>' +
+    '<div class="headline sm" style="margin-bottom:46px">Average shock drag,<br>per year in office</div>' +
+    barList(LEADERBOARD.slice().sort((a, b) => b.drag - a.drag).map(r => ({
+      label: r.short,
+      value: r.drag,
+      display: fmtSigned(r.drag) + " pp",
+      color: r.color
+    }))) +
+    '<div class="spacer"></div>' +
+    '<div class="note">Estimated percentage points of annual GDP growth lost to exogenous shocks, spread across the length of each term. Demonetisation and the GST rollout are deliberately excluded — those were choices.</div>'
+});
+
+/* 11 — The adjusted leaderboard */
+CARDS.push({
+  html:
+    '<div class="eyebrow">Wrapped · Adjusted For The Noise</div>' +
+    '<div class="headline sm" style="margin-bottom:52px">Same indicators,<br>shocks added back</div>' +
+    topList(byAdjRank.slice(0, 5), r => r.adjScore.toFixed(0), r =>
+      r.term + " · " + (r.rankChange > 0 ? "up " + r.rankChange : r.rankChange < 0 ? "down " + Math.abs(r.rankChange) : "no change")) +
+    '<div class="spacer"></div>' +
+    '<div class="note">The counterfactual adds each term\'s average annual exogenous shock drag back onto GDP, GDP per capita, manufacturing and services, then re-scores everything from scratch.</div>'
+});
+
+/* 12 — Biggest mover */
+CARDS.push({
+  html:
+    '<div class="eyebrow">Biggest Climber</div>' +
+    '<div class="headline" style="color:var(--fg)">' + esc(biggestMover.name) + '</div>' +
+    '<div class="sub" style="margin-top:22px">' + esc(biggestMover.term) + '</div>' +
+    '<div class="spacer"></div>' +
+    '<div class="bignum sm" style="color:var(--fg)">#' + biggestMover.rawRank + ' → #' + biggestMover.adjRank + '</div>' +
+    '<div class="sub" style="margin-top:20px">once the 1979 oil shock and drought<br>are treated as what they were:<br>not his doing.</div>' +
+    '<div class="footer-note">Handle with care. A two-year term plus one catastrophic year makes this the least stable number in the whole deck — which is exactly why it is shown rather than hidden.</div>'
+});
+
+/* 13 — Benchmarked against the world */
+CARDS.push({
+  html:
+    '<div class="eyebrow">Versus The Global Charts</div>' +
+    '<div class="headline sm" style="margin-bottom:46px">How far ahead of<br>world growth?</div>' +
+    barList(LEADERBOARD.slice().sort((a, b) => b.excessOverWorld - a.excessOverWorld).map(r => ({
+      label: r.short,
+      value: r.excessOverWorld,
+      display: fmtSigned(r.excessOverWorld) + " pp",
+      color: r.color
+    }))) +
+    '<div class="spacer"></div>' +
+    '<div class="note">India\'s growth minus average world growth over the same years. Global downturns are already inside the benchmark, so this needs no shock estimate at all — a useful cross-check.</div>'
+});
+
+/* 14 — The honesty card. Not optional. */
+CARDS.push({
+  html:
+    '<div class="eyebrow">The Small Print</div>' +
+    '<div class="headline sm" style="margin-bottom:44px">Things this<br>Wrapped can\'t<br>tell you</div>' +
+    '<div class="sub tight" style="line-height:1.5">' +
+      '<strong>Not everyone sat the same exam.</strong> Manmohan Singh\'s term has all 11 indicators on record. Nehru\'s has 7.<br><br>' +
+      '<strong>One indicator does not reconcile.</strong> The revenue series says 3.54% a year for 2014–25; central tax revenue actually grew around 11–12% nominally. It is left in, and flagged.<br><br>' +
+      '<strong>Three governments are missing entirely</strong> — Shastri, V. P. Singh / Chandra Shekhar, and Deve Gowda / Gujral. Some of the worst years belong to nobody here.<br><br>' +
+      '<strong>Shock estimates are estimates.</strong> Ranges in the literature are wide, and handling a crisis well is itself a test of governance.<br><br>' +
+      '<strong>The source has a side.</strong> Figures are compiled from AndhBhakt.org, which publishes from a political standpoint.' +
+    '</div>'
+});
+
+/* 15 — Outro / receipt */
+CARDS.push({
+  html:
+    '<div class="eyebrow">That\'s Your Wrapped</div>' +
+    '<div class="headline sm" style="margin-bottom:44px">65 years,<br>in one card</div>' +
+    topList(byAdjRank.slice(0, 3), r => r.adjScore.toFixed(0), r => r.term) +
+    '<div style="height:50px"></div>' +
+    '<div class="sub tight">Top track · ' + esc(gdpMetric.shortLabel) + ' ' +
+      fmt(Math.max.apply(null, gdpMetric.values.filter(v => v !== null))) + '<br>' +
+      'Shocks logged · ' + SHOCKS.length + '<br>' +
+      'Indicators · ' + METRICS.length + '<br>' +
+      'Governments · ' + GOVERNMENTS.length + '</div>' +
+    '<div class="spacer"></div>' +
+    '<div style="margin-top:30px"><span class="pill" style="background:var(--fg);color:var(--bg)">Full method in the report</span></div>' +
+    '<div class="footer-note">Every figure here appears in the full report, with the shock ledger and the ranking method published in full. Argue with the assumptions — they are all on the page.</div>'
+});
+
+/* --------------------------------------------------------------------------- */
+const cardsEl = document.getElementById("cards");
+const progressEl = document.getElementById("progress");
+
+CARDS.forEach((c, i) => {
+  const t = THEMES[i % THEMES.length];
+  const el = document.createElement("div");
+  el.className = "card";
+  el.style.setProperty("--fg", t.fg);
+  el.style.setProperty("--bg", t.bg);
+  el.style.setProperty("--wash1", t.wash1);
+  el.style.setProperty("--wash2", t.wash2);
+  el.style.background = t.bg;
+  el.style.color = t.text;
+  el.innerHTML = c.html;
+  cardsEl.appendChild(el);
+
+  const seg = document.createElement("div");
+  seg.className = "seg";
+  progressEl.appendChild(seg);
+});
+
+const cardEls = Array.from(cardsEl.children);
+const segEls = Array.from(progressEl.children);
+let index = 0;
+
+function show(i) {
+  index = Math.max(0, Math.min(CARDS.length - 1, i));
+  cardEls.forEach((el, n) => el.classList.toggle("active", n === index));
+  segEls.forEach((el, n) => el.classList.toggle("done", n <= index));
+  // Progress bars sit on a light card, so flip their contrast to stay visible.
+  const t = THEMES[index % THEMES.length];
+  const light = t.text !== "#ffffff";
+  progressEl.style.filter = light ? "invert(1)" : "none";
+  document.getElementById("brand").style.color = t.text;
+}
+show(0);
+
+function next() { show(index + 1); }
+function prev() { show(index - 1); }
+
+document.getElementById("tapNext").addEventListener("click", next);
+document.getElementById("tapPrev").addEventListener("click", prev);
+document.getElementById("btnNext").addEventListener("click", next);
+document.getElementById("btnPrev").addEventListener("click", prev);
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+  if (e.key === "ArrowLeft") prev();
+});
+
+// Swipe support for the phone, where this is actually going to be read.
+let touchX = null;
+document.addEventListener("touchstart", e => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+document.addEventListener("touchend", e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
+  touchX = null;
+}, { passive: true });
+
+/* Fit the 1080x1920 card to whatever viewport it is being previewed in. */
+function fit() {
+  const pad = 74; // room for the chrome bar
+  const s = Math.min(window.innerWidth / 1080, (window.innerHeight - pad) / 1920);
+  document.documentElement.style.setProperty("--scale", String(s));
+}
+window.addEventListener("resize", fit);
+fit();
+
+/* ---------------------------------------------------------------------------
+   Export. Renders the active card at full 1080x1920 using html2canvas, loaded
+   lazily so the deck itself never depends on it. If it cannot load, say so
+   plainly rather than failing silently.
+   --------------------------------------------------------------------------- */
+const SAVE_BTN = document.getElementById("btnSave");
+
+function loadHtml2Canvas() {
+  if (window.html2canvas) return Promise.resolve(window.html2canvas);
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    s.onload = () => resolve(window.html2canvas);
+    s.onerror = () => reject(new Error("could not load the image exporter"));
+    document.head.appendChild(s);
+  });
+}
+
+SAVE_BTN.addEventListener("click", () => {
+  const original = SAVE_BTN.textContent;
+  SAVE_BTN.textContent = "Rendering…";
+  SAVE_BTN.disabled = true;
+
+  loadHtml2Canvas()
+    .then(h2c => {
+      const el = cardEls[index];
+      const deck = document.getElementById("deck");
+      const prevTransform = deck.style.transform;
+      deck.style.transform = "scale(1)"; // export at true resolution
+      return h2c(el, { width: 1080, height: 1920, scale: 1, backgroundColor: null, useCORS: true })
+        .then(canvas => {
+          deck.style.transform = prevTransform;
+          const a = document.createElement("a");
+          a.download = "india-wrapped-" + String(index + 1).padStart(2, "0") + ".png";
+          a.href = canvas.toDataURL("image/png");
+          a.click();
+          SAVE_BTN.textContent = original;
+          SAVE_BTN.disabled = false;
+        })
+        .catch(err => { deck.style.transform = prevTransform; throw err; });
+    })
+    .catch(err => {
+      SAVE_BTN.textContent = "Export unavailable — screenshot instead";
+      console.error(err);
+      setTimeout(() => { SAVE_BTN.textContent = original; SAVE_BTN.disabled = false; }, 3200);
+    });
+});
+</script>
+</body>
+</html>
