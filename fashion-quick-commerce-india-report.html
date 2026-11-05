@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fashion quick commerce in India: store-fulfilled aggregator vs dark store</title>
+<style>
+:root{
+  --paper:#f5f1e8; --card:#fbf8f1; --ink:#1c1b18; --ink2:#55524a; --ink3:#8a867b;
+  --rule:rgba(28,27,24,.12); --rule2:rgba(28,27,24,.22);
+  --a:#b4421f;           /* Model A: store-fulfilled */
+  --a-soft:rgba(180,66,31,.12);
+  --b:#2b3a4a;           /* Model B: dark store */
+  --b-soft:rgba(43,58,74,.12);
+  --good:#3f6b4a; --bad:#a3302a;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--serif);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+nav.top{position:sticky;top:0;z-index:20;background:rgba(245,241,232,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+nav.top .wrap{display:flex;gap:20px;align-items:center;height:48px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+nav.top b{font:600 13px var(--mono);margin-right:8px}
+nav.top a{font:13px var(--sans);color:var(--ink2);text-decoration:none;padding:4px 0;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
+nav.top a:hover{color:var(--ink);border-color:var(--ink)}
+header.mast{padding:56px 0 32px;border-bottom:2px solid var(--ink)}
+.kicker{font:12px var(--mono);color:var(--ink2);letter-spacing:.02em}
+h1{font:400 clamp(32px,5.2vw,58px)/1.06 var(--serif);margin:12px 0 16px;max-width:20ch;letter-spacing:-.02em}
+.dek{font-size:19px;color:var(--ink2);max-width:62ch;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:20px;font:12px var(--mono);color:var(--ink3)}
+section{padding:56px 0 8px;border-bottom:1px solid var(--rule)}
+section>.wrap>h2{font:400 clamp(26px,3.4vw,36px)/1.15 var(--serif);margin:0 0 4px;letter-spacing:-.01em}
+.num{font:12px var(--mono);color:var(--a);margin-right:8px}
+.lede{color:var(--ink2);max-width:70ch;margin:8px 0 24px}
+h3{font:600 15px var(--sans);margin:32px 0 8px}
+p{margin:0 0 12px;max-width:74ch}
+.cite{font:11px var(--mono);color:var(--a);text-decoration:none;vertical-align:super;margin-left:1px}
+.cite:hover{text-decoration:underline}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}.wrap{padding:0 16px}}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:20px}
+.card h4{margin:0 0 8px;font:600 14px var(--sans)}
+.card p{font-size:15px;color:var(--ink2);margin:0 0 8px}
+.stat{font:400 34px/1.1 var(--serif);font-variant-numeric:tabular-nums}
+.stat small{font:12px var(--mono);color:var(--ink3);display:block;margin-top:6px}
+.verdict{background:var(--ink);color:var(--paper);border-radius:12px;padding:28px;margin:24px 0}
+.verdict .kicker{color:#c9c3b4}
+.verdict h3{font:400 clamp(22px,3vw,30px)/1.2 var(--serif);margin:8px 0 12px}
+.verdict p{color:#e4dfd1;font-size:16px}
+.verdict .cite{color:#f0a27f}
+ol.find{padding-left:0;list-style:none;counter-reset:f;margin:0}
+ol.find li{counter-increment:f;display:grid;grid-template-columns:36px 1fr;gap:8px;padding:12px 0;border-top:1px solid var(--rule)}
+ol.find li::before{content:counter(f,decimal-leading-zero);font:12px var(--mono);color:var(--a);padding-top:5px}
+ol.find li p{margin:0;max-width:none}
+.tag{display:inline-block;font:600 10.5px var(--mono);padding:1px 6px;border-radius:4px;border:1px solid var(--rule2);color:var(--ink2);margin-left:4px;vertical-align:1px;white-space:nowrap}
+.tag.R{background:#e7efe5;border-color:#bcd0b8;color:#2f5a3a}
+.tag.M{background:#efe9d6;border-color:#d6ca9e;color:#6b5a1d}
+.tag.E{background:#f3e2da;border-color:#e0b9a8;color:#8a3a1c}
+.tag.N{background:#e8e6e1;color:#6a665c}
+.tag.I{background:#e1e7ee;border-color:#b8c5d4;color:#2b3a4a}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font:13.5px/1.45 var(--sans)}
+th,td{padding:10px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font:600 12px var(--sans);color:var(--ink2);background:rgba(28,27,24,.04);position:sticky;top:0;cursor:pointer;white-space:nowrap;user-select:none}
+th.nosort{cursor:default}
+th[aria-sort="ascending"]::after{content:" ↑"} th[aria-sort="descending"]::after{content:" ↓"}
+tr:last-child td{border-bottom:0}
+td.n{font-variant-numeric:tabular-nums}
+.chip{display:inline-block;font:600 11px var(--mono);padding:2px 8px;border-radius:99px;color:#fff;white-space:nowrap}
+.chip.A{background:var(--a)} .chip.B{background:var(--b)} .chip.H{background:#6b6a2a} .chip.L{background:#7a766b} .chip.X{background:#8a3a6a}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font:12px var(--mono);color:var(--ink2);margin:8px 0 16px}
+.note{font:12.5px/1.5 var(--sans);color:var(--ink3);margin:8px 0 0;max-width:80ch}
+.callout{border-left:3px solid var(--a);padding:8px 16px;background:var(--a-soft);border-radius:0 8px 8px 0;margin:16px 0;font-size:15px}
+.callout.b{border-color:var(--b);background:var(--b-soft)}
+svg text{font-family:var(--mono)}
+.chart{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px 16px 8px}
+.chart h4{margin:0 0 2px;font:600 14px var(--sans)} .chart .sub{font:12px var(--mono);color:var(--ink3);margin-bottom:8px}
+.chart svg{width:100%;height:auto;display:block}
+/* calculator */
+.calc{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+@media(max-width:960px){.calc{grid-template-columns:1fr}}
+.ctrls{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px 20px;position:sticky;top:60px}
+@media(max-width:960px){.ctrls{position:static}}
+.ctrls h4{font:600 12px var(--mono);color:var(--ink3);margin:16px 0 8px}
+.ctrls h4:first-child{margin-top:0}
+.sl{margin:0 0 12px}
+.sl label{display:flex;justify-content:space-between;font:13px var(--sans);color:var(--ink2)}
+.sl output{font:600 13px var(--mono);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--a);margin:4px 0 0}
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+button.pre{font:13px var(--sans);padding:6px 12px;border:1px solid var(--rule2);background:transparent;border-radius:8px;cursor:pointer;color:var(--ink);transition:transform .16s var(--ease),background .15s}
+button.pre:hover{background:rgba(28,27,24,.05)} button.pre:active{transform:scale(.97)}
+button.pre[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px 20px;border-top:3px solid var(--a)}
+.kpi.B{border-top-color:var(--b)}
+.kpi .t{font:600 12px var(--mono);color:var(--ink3)}
+.kpi .v{font:400 38px/1.1 var(--serif);font-variant-numeric:tabular-nums;margin:6px 0 2px}
+.kpi .v.neg{color:var(--bad)} .kpi .v.pos{color:var(--good)}
+.kpi .s{font:12.5px var(--sans);color:var(--ink2)}
+.assump{font:13px/1.5 var(--sans);color:var(--ink2)}
+.assump li{margin:2px 0}
+/* heatmap */
+.hm td.s{text-align:center;font:600 13px var(--mono);width:84px;color:#1c1b18}
+.mx{display:grid;grid-template-columns:28px repeat(5,1fr);grid-template-rows:repeat(5,64px) 28px;gap:3px;max-width:460px}
+.mx div{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:2px;font:600 11px var(--mono);border-radius:4px}
+.mx .ax{background:none;color:var(--ink3);font-weight:400}
+.dot{display:inline-flex;width:20px;height:20px;border-radius:99px;align-items:center;justify-content:center;font:600 10px var(--mono);color:#fff;background:var(--a)}
+.dot.B{background:var(--b)}
+.seg{display:inline-flex;border:1px solid var(--rule2);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.seg button{font:13px var(--sans);padding:6px 14px;border:0;background:transparent;cursor:pointer;color:var(--ink)}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+/* journeys */
+.lane{margin:16px 0 8px}
+.lane h3{display:flex;align-items:center;gap:8px;margin:24px 0 12px}
+.stages{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px}
+.stage{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px;position:relative;font:13px/1.5 var(--sans)}
+.stage::after{content:"";position:absolute;right:-13px;top:28px;border:6px solid transparent;border-left:8px solid var(--rule2)}
+.stage:last-child::after{display:none}
+.stage .st{font:600 11px var(--mono);color:var(--ink3)}
+.stage h5{font:600 16px var(--serif);margin:4px 0 10px}
+.stage dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px}
+.stage dt{color:var(--ink3);font:11.5px var(--mono)} .stage dd{margin:0;font-variant-numeric:tabular-nums}
+.stage .trig{margin-top:10px;padding-top:8px;border-top:1px dashed var(--rule2);color:var(--ink2)}
+.stage.A{border-top:3px solid var(--a)} .stage.B{border-top:3px solid var(--b)}
+details{border-top:1px solid var(--rule);padding:12px 0} details:last-of-type{border-bottom:1px solid var(--rule)}
+summary{cursor:pointer;font:600 14px var(--sans)} details p,details li{font-size:14.5px;color:var(--ink2)}
+code,.mono{font:12.5px var(--mono)}
+ol.src{padding-left:0;list-style:none;font:13px/1.45 var(--sans);columns:2;column-gap:32px}
+@media(max-width:860px){ol.src{columns:1}}
+ol.src li{break-inside:avoid;padding:4px 0 4px 40px;position:relative;border-bottom:1px solid var(--rule)}
+ol.src li b{position:absolute;left:0;font:11px var(--mono);color:var(--a);top:6px}
+ol.src a{word-break:break-all;color:var(--ink2)}
+footer{padding:40px 0 64px;font:12.5px var(--sans);color:var(--ink3)}
+.reveal{opacity:0;transform:translateY(8px);transition:opacity .4s var(--ease),transform .4s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media print{nav.top{display:none}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<nav class="top"><div class="wrap"><b>FQC·IN</b>
+<a href="#s1">Summary</a><a href="#s2">Market</a><a href="#s3">Players</a><a href="#s4">Unit economics</a><a href="#s5">Risks</a><a href="#s6">Scaling</a><a href="#s7">Validation</a><a href="#s8">Confidence</a><a href="#s9">Sources</a></div></nav>
+
+<header class="mast"><div class="wrap">
+<div class="kicker">Decision report · prepared 4 November 2026 · figures from 2025–2026 unless flagged</div>
+<h1>Fashion quick commerce in India: should you build the store-fulfilled aggregator?</h1>
+<p class="dek">A store-fulfilled, zero-inventory aggregator compared with the dark-store model: market size, 20 players, unit economics you can change yourself, the risks, two scaling paths and a test plan that costs under ₹6 lakh.</p>
+<div class="meta"><span>FX used: ₹88 = US$1 (assumption, not verified)</span><span>Tags: <span class="tag R">R</span> company-reported <span class="tag M">M</span> media <span class="tag I">I</span> independent/analyst firm <span class="tag E">E</span> my estimate <span class="tag N">N</span> not disclosed</span></div>
+</div></header>
+
+<main>
+<!-- 1 -->
+<section id="s1"><div class="wrap reveal">
+<h2><span class="num">01</span>Executive summary</h2>
+<div class="verdict">
+<div class="kicker">Verdict</div>
+<h3>Run a 4-week concierge test. Do not build the app or sign leases yet.</h3>
+<p>Demand for fast fashion is real but small, and the model you describe is already being copied by well-funded players. The economics work only if stores accept ~20% commission and customers pay most of the delivery cost. Nobody publishes acceptance or stock-accuracy data for broadcast dispatch in fashion, so that is the first thing to measure. The test costs about ₹4–6 lakh <span class="tag E">E</span> and can kill the idea in a month.</p>
+</div>
+<div class="grid g4" style="margin-bottom:24px">
+<div class="card"><div class="stat">~$0.24bn<small>quick-commerce fashion, CY26 (≈1% of ~$24bn online fashion)</small></div><p>Redseer share × size; my multiplication.[4] Another estimate says $1.7–2bn.[18]</p></div>
+<div class="card"><div class="stat">+340%<small>fashion on quick commerce, Jan 2026 YoY</small></div><p>Fastest-growing category, from a low base.[3]</p></div>
+<div class="card"><div class="stat">1,700+<small>AJIO Rush fashion stores on 2-hour test</small></div><p>Reliance reached 600+ cities in 9 months.[8]</p></div>
+<div class="card"><div class="stat">₹30 → −₹70<small>my base case, store-fulfilled, per order before → after cluster costs</small></div><p>₹1,500 order, 200 orders a day per cluster. Dark store: ₹86 → −₹21 at 250 a day. See §4.</p></div>
+</div>
+<h3>Seven findings</h3>
+<ol class="find">
+<li><p><b>The market is real, tiny and growing fast.</b> Quick commerce carries about 1% of online fashion, against about 70% of online grocery.[2][5] Redseer expects 3–5% of online fashion by 2030, which is roughly $1.4–2.7bn on its own projection ($46–53bn online fashion).[4]</p></li>
+<li><p><b>Your model already exists and is being funded.</b> AJIO Rush is store-fulfilled at national scale.[8] ZILO, the best-funded dark-store player, now connects 150+ brand stores and aims for 250.[16] Booon runs a zero-dark-store 2-hour aggregator in six cities.[32] Clozzet and Slazzy are tiny regional versions.[48][49]</p></li>
+<li><p><b>Dark stores are burning cash and have a graveyard.</b> Rapid-fashion start-ups burned about $3M in March 2026 alone.[18] Blip shut within roughly a year of launch.[38] Dunzo, a hyperlocal pioneer, was written off by Reliance at $200M.[37]</p></li>
+<li><p><b>Unit economics are thin on both sides.</b> At 20% commission, ₹80 delivery fully passed on, 20% returns and ₹120 acquisition cost per order, the store-fulfilled model earns about ₹30 per order before cluster costs, so a ₹6 lakh a month cluster needs ~670 orders a day to break even. The dark store earns ~₹86 per order before store costs and needs ~310 orders a day per store. Both numbers swing hard on delivery recovery and returns (§4).</p></li>
+<li><p><b>Commission is the weak point.</b> Reported marketplace rates run 17–25% on Myntra[24] and 14–18% on Flipkart until it cut fashion commission to zero in July 2026.[23] Local stores have little reason to pay 20% plus handle returns for volume they can already sell at the counter.</p></li>
+<li><p><b>The real white space is unorganised multi-brand retail, Tier-2 cities and occasion wear.</b> About 45% of fashion GMV is still unorganised.[4] Incumbent store networks are brand-owned outlets, not independents. Dark-store players cluster in Mumbai, Bengaluru and Delhi NCR (§2 coverage chart).</p></li>
+<li><p><b>The strongest case against you:</b> the winner is probably whoever owns the stores (Reliance, Myntra's brand ties, NEWME, Snitch) and owns the customer. An aggregator in the middle has no inventory control, no data on stock, and a customer who can walk into the shop next time.</p></li>
+</ol>
+<h3>Three biggest unknowns</h3>
+<div class="grid g3">
+<div class="card"><h4>1 · Broadcast acceptance and fill rate</h4><p>What share of orders does at least one nearby store accept within 3 minutes and then actually pack in the right size? No public fashion figure exists. Test first.</p></div>
+<div class="card"><h4>2 · Will customers pay the delivery fee and wait 60–120 minutes?</h4><p>43% of quick-commerce users say they do not want to pay any extra fee.[40] Your model assumes they pay all of it.</p></div>
+<div class="card"><h4>3 · Will independent stores pay ~20% and stay honest on price?</h4><p>Mall and brand outlets face lease and MRP limits. Independents may accept but with discounting and walk-in conflicts. No public data on this.</p></div>
+</div>
+</div></section>
+
+<!-- 2 -->
+<section id="s2"><div class="wrap reveal">
+<h2><span class="num">02</span>Market size and demand</h2>
+<p class="lede">Numbers conflict because firms define "quick commerce" and "fashion" differently. Ranges are shown where they disagree.</p>
+<div class="grid g2">
+<div class="chart"><h4>Quick-commerce GMV, all categories</h4><div class="sub">US$ bn · bars show range · hover for source</div><svg id="chGmv" viewBox="0 0 560 300"></svg>
+<p class="note">Bain via First Resort: 2023–2025.[2] Redseer: FY26 (Apr 2025–Mar 2026).[5] Projections: Google–Redseer $90bn FY31[51]; Inc42 Datalabs $68bn 2031 (a different base: it quotes $8.3bn for 2026).[1] Scale of disagreement: 2025 is $10–11bn vs the Inc42 figure for 2026 of $8.3bn.</p></div>
+<div class="chart"><h4>How online fashion is delivered</h4><div class="sub">% of online fashion GMV · Redseer · range midpoints plotted</div><svg id="chSpeed" viewBox="0 0 560 300"></svg>
+<p class="note">Redseer Online Fashion Brand Index 2026.[4] Bars use midpoints of published ranges (e.g. rapid &lt;4 hrs: 2–6% now → 10–15% in CY30P). Quick commerce under 30 min is &lt;1% of fashion today and 3–5% of online fashion by CY30P.</p></div>
+</div>
+
+<h3>Key market numbers</h3>
+<div class="tablewrap"><table id="tblMarket"><thead><tr><th class="nosort">Metric</th><th class="nosort">Value</th><th class="nosort">Source, date</th><th class="nosort">Type</th></tr></thead><tbody></tbody></table></div>
+
+<h3>Who orders, what, when</h3>
+<div class="grid g3">
+<div class="card"><h4>Who</h4><p>Gen Z is 40–45% of India's e-retail shoppers and nearly half of incremental online orders; nearly half of Flipkart Fashion customers.[34] Amazon says Gen Z is over half of Amazon Fashion customers.[36] Tier-2 and smaller markets gave nearly half of incremental e-retail orders in 2025.[34] Gender split for quick fashion: not disclosed <span class="tag N">N</span>.</p></div>
+<div class="card"><h4>What and when</h4><p>Occasion wear, kurta sets and last-minute gifting grow up to 25% month on month at Libas.[17] At Slikk, 35–40% of ethnic-wear purchases include jewellery.[54] Snitch reports many customers revert to basics like black T-shirts on quick apps.[57] Valentine's Day: 4.5× usual M-Now orders.[2] Hour-of-day and weekday patterns: not disclosed <span class="tag N">N</span>. M-Now delivered as early as 6:05 am and as late as 11:45 pm.[7]</p></div>
+<div class="card"><h4>How much, how often</h4><p>All quick commerce: AOV ≈ ₹460 (Jan 2026, after discounts, excluding delivery).[3] 69% of users typically order ₹200–999.[39] Fashion: NEWME AOV ₹1,400–1,500 online, CAC ₹300–400 monthly per user.[19] Fashion order frequency and repeat rate: not disclosed <span class="tag N">N</span>; Slikk claims repeat is "among the highest" with no figure.[9] Willingness to pay: 43% reject any extra fee.[40] Slikk charges ₹25.[21]</p></div>
+</div>
+
+<div class="grid g2" style="margin-top:16px">
+<div class="chart"><h4>City coverage: who delivers where</h4><div class="sub">dark = live · light = announced or partial · from press and company pages</div><svg id="chCity" viewBox="0 0 560 420"></svg>
+<p class="note">Coverage compiled from the sources in §3. Crowded: Mumbai, Bengaluru, Delhi NCR. Thin: Lucknow, Jaipur, Ahmedabad, Kolkata, Hyderabad for fashion-first players. AJIO Rush claims 600+ cities, with the 2-hour promise only on the 1,700+ store test.[8]</p></div>
+<div class="chart"><h4>Where online fashion demand sits</h4><div class="sub">share of online fashion GMV, CY26E · Redseer</div><svg id="chTier" viewBox="0 0 560 300"></svg>
+<p class="note">Metro = top 8 cities, Tier 1 = ~55 cities above 1M people, Tier 2+ = below 1M.[4] Quick commerce overall: non-metro was ~23% of GMV in 2025, projected 27–30% by 2030.[2] <b>City-level fashion demand is not disclosed</b> <span class="tag N">N</span>; metros are the proxy.</p></div>
+</div>
+<div class="callout"><b>Read this carefully.</b> The strongest pro-demand datapoint is Myntra's own: M-Now drives about 10% of orders where it is live, with 20% customer penetration.[7] That is a company claim from active pincodes only, not an average across Myntra.</div>
+</div></section>
+
+<!-- 3 -->
+<section id="s3"><div class="wrap reveal">
+<h2><span class="num">03</span>Competitor landscape</h2>
+<p class="lede">Click any column heading to sort. Each cell carries a tag showing who says so. Where a figure is missing, it is not public.</p>
+<div class="legend"><span><span class="chip B">Dark store</span></span><span><span class="chip A">Store-fulfilled</span></span><span><span class="chip H">Hybrid</span></span><span><span class="chip L">Horizontal app</span></span><span><span class="chip X">Brand-owned</span></span></div>
+<div class="tablewrap"><table id="tblPlayers"><thead></thead><tbody></tbody></table></div>
+<p class="note">Failed or exited: Blip (Bengaluru, 30-min fashion; closed after about 9–12 months, sources differ).[38] Dunzo (Reliance wrote off $200M in Aug 2025).[37] Not assessed with primary data: ONDC fashion sellers; the network passed 500M cumulative transactions in July 2026, but a fashion-specific figure was not found.[43]</p>
+
+<div class="grid g2" style="margin-top:16px">
+<div class="chart"><h4>Positioning map</h4><div class="sub">x: delivery promise (minutes, faster is left) · y: disclosed fulfilment points (log) · colour: model</div><svg id="chMap" viewBox="0 0 560 405"></svg>
+<p class="note" id="mapNote"></p></div>
+<div class="card"><h4>What the table says</h4>
+<p><b>Speed versus reach is the real trade-off.</b> Everyone promising 60 minutes has fewer than ~160 nodes; the only player past 1,000 nodes (AJIO Rush) promises 2–4 hours.</p>
+<p><b>Hybrids are winning the argument.</b> ZILO started as dark stores and added brand-store tie-ups to widen catalogue without stock.[16][45] NEWME and Snitch use their own stores as hubs and stay asset-light.[19][30]</p>
+<p><b>Quickeee is not store-fulfilled.</b> Its launch release says it is powered by hyperlocal dark stores.[31]</p>
+<p><b>Horizontals will not go deep.</b> Blinkit, Zepto and Instamart add fashion to lift basket size; fashion is 8–10% of quick-commerce orders in early 2026 in metros.[20] Amazon Now plans 300 cities[36]; Flipkart Minutes lists 77,000+ products across 1,400+ categories in 150+ cities.[33]</p></div>
+</div>
+</div></section>
+
+<!-- 4 -->
+<section id="s4"><div class="wrap reveal">
+<h2><span class="num">04</span>Unit economics</h2>
+<p class="lede">An illustrative per-order P&amp;L for both models. Every input is my assumption unless a source is attached. Move the sliders; everything recalculates.</p>
+<div class="calc">
+<div class="ctrls">
+<div class="presets" role="group" aria-label="Presets"><button class="pre" data-p="base" aria-pressed="true">Base</button><button class="pre" data-p="opt" aria-pressed="false">Optimistic</button><button class="pre" data-p="stress" aria-pressed="false">Stress</button></div>
+<h4>SHARED</h4>
+<div class="sl"><label for="aov">Order value (AOV)<output id="o_aov"></output></label><input type="range" id="aov" min="600" max="3000" step="50"></div>
+<div class="sl"><label for="dc">Delivery cost per leg<output id="o_dc"></output></label><input type="range" id="dc" min="40" max="200" step="5"></div>
+<div class="sl"><label for="ret">Return / refusal rate<output id="o_ret"></output></label><input type="range" id="ret" min="0" max="45" step="1"></div>
+<div class="sl"><label for="cac">Acquisition cost per order<output id="o_cac"></output></label><input type="range" id="cac" min="0" max="400" step="10"></div>
+<h4>MODEL A · STORE-FULFILLED</h4>
+<div class="sl"><label for="comm">Commission from store<output id="o_comm"></output></label><input type="range" id="comm" min="5" max="35" step="1"></div>
+<div class="sl"><label for="rec">Delivery passed to customer<output id="o_rec"></output></label><input type="range" id="rec" min="0" max="100" step="5"></div>
+<div class="sl"><label for="opsA">Cluster orders per day<output id="o_opsA"></output></label><input type="range" id="opsA" min="20" max="1000" step="10"></div>
+<h4>MODEL B · DARK STORE</h4>
+<div class="sl"><label for="gm">Gross margin on goods<output id="o_gm"></output></label><input type="range" id="gm" min="20" max="55" step="1"></div>
+<div class="sl"><label for="opsB">Orders per store per day<output id="o_opsB"></output></label><input type="range" id="opsB" min="50" max="1200" step="10"></div>
+</div>
+<div>
+<div class="kpis" aria-live="polite">
+<div class="kpi"><div class="t">A · STORE-FULFILLED</div><div class="v" id="kA"></div><div class="s" id="kAs"></div></div>
+<div class="kpi B"><div class="t">B · DARK STORE</div><div class="v" id="kB"></div><div class="s" id="kBs"></div></div>
+</div>
+<div class="chart"><h4>Per-order P&amp;L</h4><div class="sub">₹ per order · green adds, red subtracts · last bar is contribution after fixed costs</div><svg id="chPL" viewBox="0 0 640 430"></svg></div>
+<h3>Sensitivity: change in profit per order</h3>
+<div class="tablewrap"><table id="tblSens"><thead><tr><th class="nosort">Change</th><th class="nosort">A (₹)</th><th class="nosort">B (₹)</th></tr></thead><tbody></tbody></table></div>
+<div class="grid g2" style="margin-top:16px">
+<div class="card"><h4>Commission benchmarks</h4>
+<p>Myntra: reported 17–25% (no public rate card)[24]; another seller guide says 25–30% in total deductions.[25] AJIO emerging-brand model: about 23%; Nykaa Fashion 25–35% (same blog, low confidence).[24] Flipkart: averaged 14–18% before it dropped fashion commission in July 2026.[23] Zomato/Swiggy food: 20–30% reported by industry commentary, ONDC buyer-seller fees far lower, but ONDC itself charges none and the seller app sets its fee.[43] <span class="tag M">M</span></p></div>
+<div class="card"><h4>Delivery price benchmarks</h4>
+<p>Borzo: flat ₹35 + ₹8 per km (Sep 2026 help page)[26]; Shadowfax: ₹50 up to 4 km, ₹10 per km after, 7 km maximum (reseller page, undated)[27]; Porter bike from ₹48 incl. 1 km (Bengaluru)[28]. Typical 3–5 km hop: ₹55–85 one way <span class="tag E">E</span>. Shadowfax charges 25% if a merchant cancels after the rider arrives and 100% after pickup.[27]</p></div>
+</div>
+</div>
+</div>
+<h3>Assumptions behind the calculator</h3>
+<div class="grid g2">
+<ul class="assump"><li><b>A revenue</b> = AOV × commission × (1 − return rate). A returned item earns no commission.</li><li><b>A delivery</b>: you pay one outbound leg; the customer repays the "passed to customer" share. Returns cost one extra leg plus ₹20 handling.</li><li><b>A fixed cost</b>: ₹6 lakh a month per micro-cluster (ops lead, store-success, support) <span class="tag E">E</span>.</li><li><b>Shared per-order costs</b>: payment 2% of AOV[25], packing ₹15, support/tech ₹25 <span class="tag E">E</span>; acquisition per order set by slider (NEWME's monthly CAC of ₹300–400 per user, spread over ~3 orders, gives ~₹120[19] <span class="tag E">E</span>).</li></ul>
+<ul class="assump"><li><b>B revenue</b> = AOV × (1 − return rate) × gross margin; markdown and dead stock = 6% of kept sales <span class="tag E">E</span>.</li><li><b>B delivery</b> costs 75% of A's per-leg cost (shorter radius) and the customer pays a flat ₹25 (Slikk's fee[21]).</li><li><b>B variable</b>: pick-and-pack ₹20 plus the shared costs above.</li><li><b>B fixed cost</b>: ₹8 lakh a month per store (rent ₹2.5L, staff ₹4L, utilities and tech ₹1.5L) <span class="tag E">E</span>. Grocery dark-store guides quote ₹2–5 lakh rent in Mumbai and ₹25–80 lakh capex.[29]</li><li>No grocery benchmark applies directly: Redseer's breakeven of 1,200–1,250 orders a day per store is for ₹460 baskets.[6]</li></ul>
+</div>
+<div class="callout b"><b>Sanity check on Slikk's claim.</b> It targets ₹90–100 crore monthly GMV from about 12 Bengaluru stores.[9] That implies ₹7.5–8.3 crore per store per month, or 1,000–1,800 orders a store a day at an AOV of ₹1,500–2,500. That is far above my 300-order breakeven and above what fashion dark stores normally report, so I treat it as a target, not a result. (My arithmetic, <span class="tag E">E</span>.)</div>
+</div></section>
+
+<!-- 5 -->
+<section id="s5"><div class="wrap reveal">
+<h2><span class="num">05</span>Risk matrix and heatmap</h2>
+<p class="lede">Scores are my judgement (likelihood × impact, each 1–5), anchored on the evidence column. Evidence quality is mixed: for the store-fulfilled risks that matter most, no public fashion data exists.</p>
+<div class="tablewrap"><table class="hm" id="tblRisk"><thead><tr><th class="nosort">#</th><th class="nosort">Risk</th><th class="nosort">A · store-fulfilled</th><th class="nosort">B · dark store</th><th class="nosort">Evidence and what is missing</th></tr></thead><tbody></tbody></table></div>
+<h3>Likelihood × impact</h3>
+<div class="seg" role="group"><button data-m="A" aria-pressed="true">Model A</button><button data-m="B" aria-pressed="false">Model B</button></div>
+<div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start"><div><div class="mx" id="mx"></div><div class="note" style="margin-left:31px">Likelihood → · Impact ↑</div></div>
+<div class="card" style="flex:1;min-width:260px"><h4>Read-out</h4><p id="mxRead"></p></div></div>
+<h3>Store-fulfilled risks: what the evidence says</h3>
+<details open><summary>Stock accuracy and cancellations</summary><p>No public acceptance, stock-out or cancellation figures exist for fashion store-fulfilment. Fynd describes the core failure: one shirt in one store, two orders seconds apart, both accepted, oversell.[1] A Fynd customer story on Raymond (seen only as a search snippet) says "product not reflecting" had become normal before store systems were unified. For ONDC, one seller guide suggests a cancellation rate under 3% is "good", but that is an advice benchmark, not measured data.[43] <b>Not disclosed</b> <span class="tag N">N</span>; test it.</p></details>
+<details><summary>Does ping-and-confirm work?</summary><p>Brand-store routing is exactly how AJIO Rush and ZILO's mall-to-home model work, but both integrate store stock systems, which you lack. ZILO routes an item not in dark-store stock to a brand boutique and delivers in about 120 minutes, so confirmation latency is already a 60 → 120 minute trade.[44][45] No acceptance-rate or confirmation-time data from Swiggy, Zomato, Dunzo, ONDC or Magicpin was found for this report <span class="tag N">N</span>.</p></details>
+<details><summary>Store willingness, MRP parity and brand-outlet limits</summary><p>ZILO took until early August 2026 to integrate 150 brand stores and plans 250 by mid-September, which shows brand-store onboarding is slow but possible.[16] Lease, franchise and MRP clauses for mall brand outlets were not found in public sources <span class="tag N">N</span>. Flipkart cutting fashion commission to zero shows how hard it is to charge sellers.[23]</p></details>
+<details><summary>Store hours, pack time and walk-in conflict</summary><p>M-Now's dark stores deliver from 6:05 am to 11:45 pm.[7] NEWME runs 24×7 Zip from its own stock.[19] Independent stores usually close around the time impulse demand peaks; no measured store-hours data was found <span class="tag N">N</span>. Packing time and walk-in priority: not disclosed.</p></details>
+<details><summary>Disintermediation</summary><p>No fashion-specific evidence found <span class="tag N">N</span>. In general, food platforms control repeat use through the customer app, loyalty and payments; as an aggregator you can mirror that with prepaid orders and no store phone number shared at checkout. <span class="tag E">E</span> from general knowledge, not sourced.</p></details>
+<details><summary>Hyperlocal logistics</summary><p>Shadowfax's own hyperlocal page (search snippet only) claims 98%+ on-time, 100+ cities and 500K+ daily orders, and its developer docs show an API with serviceability and cost check. These are company claims, not independently verified. Borzo and Porter quote live per-order prices (see §4).[26][28] Peak-hour reliability and Tier-2 coverage per provider: not disclosed <span class="tag N">N</span>; Dunzo's collapse is a reminder that a hyperlocal provider can disappear.[37]</p></details>
+<h3>Dark-store risks</h3>
+<p>Fashion dark stores hold only about 7,000–8,000 styles, so a store can serve "last minute" and little else.[18] Capex and opex for a fashion store were not found; grocery guides quote ₹25–80 lakh and tie break-even to rent below ~5–8% of order value.[29] Sector burn: $2–2.5M in January and $3M in March 2026.[18] Seasonality and dead stock: not disclosed <span class="tag N">N</span>; my 6% markdown allowance is an assumption.</p>
+</div></section>
+
+<!-- 6 -->
+<section id="s6"><div class="wrap reveal">
+<h2><span class="num">06</span>Scaling journeys</h2>
+<p class="lede">Two paths from zero. Every number here is my estimate <span class="tag E">E</span>, derived below. Blended team cost: ₹1.2 lakh per person per month. Order volume at each stage = nodes × orders per node per day.</p>
+<div class="lane"><h3><span class="chip A">Path 1</span> Store-fulfilled first, then a small dark layer</h3><div class="stages" id="lane1"></div></div>
+<div class="lane"><h3><span class="chip B">Path 2</span> Dark store first, then add store partners</h3><div class="stages" id="lane2"></div></div>
+
+<div class="chart"><h4>Cumulative capital by stage</h4><div class="sub">₹ crore · midpoint of estimated range · cumulative</div><svg id="chCap" viewBox="0 0 640 300"></svg></div>
+
+<h3>Side by side</h3>
+<div class="tablewrap"><table id="tblPaths"><thead><tr><th class="nosort">Dimension</th><th class="nosort">Path 1 · store-fulfilled first</th><th class="nosort">Path 2 · dark store first</th><th class="nosort">Why</th></tr></thead><tbody></tbody></table></div>
+
+<h3>How the stage numbers were derived</h3>
+<details open><summary>Path 1</summary><ul>
+<li><b>S0 concierge, 6 weeks:</b> team 2 × 1.5 months × ₹1.2L = ₹3.6L; ~340 orders × (₹80 delivery + ₹120 acquisition) ≈ ₹0.7L; tools ₹0.5L → about ₹4.8L, shown as ₹4–6L. Orders = 10–15 stores × 0.5–1 per day.</li>
+<li><b>S1 micro-cluster, 6 months:</b> team 7 × 6 × ₹1.2L = ₹50L; app ₹10L; acquisition 60 orders × 180 days × ₹120 = ₹13L; subsidy ~₹1L → about ₹75L, shown as ₹65–90L. Orders = 40–60 stores × ~1 per day.</li>
+<li><b>S2 multi-cluster, 12 months:</b> team 25 × 12 × ₹1.2L = ₹3.6cr; acquisition 400 orders × 365 × ₹120 = ₹1.75cr; tech ₹0.3cr → ₹5.6cr, shown ₹5–7cr. Orders = 250–400 stores × 1.2–1.5.</li>
+<li><b>S3 dark layer, 12 months:</b> 3 hubs × ₹1.0cr (fit-out, deposit, part-consigned inventory, see Path 2) = ₹3cr; hub opex ₹8L × 3 × 12 = ₹2.9cr; 40 added staff × 12 × ₹1.2L = ₹5.8cr → ₹11.7cr, shown ₹10–14cr incremental.</li>
+<li><b>S4 own inventory:</b> 4,000 orders/day × ₹1,500 × 65% cost of goods × 90 days of stock = ₹35cr working capital alone.</li></ul></details>
+<details><summary>Path 2</summary><ul>
+<li><b>D0 one store:</b> fit-out ₹20L + deposit ₹10L; inventory 7,000 styles (the capacity quoted in [18]) × 4 units × ₹500 landed cost = ₹1.4cr, half on consignment = ₹70L; team 12 × 6 × ₹1.2L = ₹86L; tech ₹15L; acquisition 120 orders × 180 × ₹120 = ₹26L → ~₹2.3cr, shown ₹2–3cr. Size-by-colour depth: 7,000 styles × ~4 sizes ≈ 28,000 SKUs.</li>
+<li><b>D1 3–4 stores:</b> 3 more stores × ₹1.0cr = ₹3cr; team 30 × 12 × ₹1.2L = ₹4.3cr; acquisition 450 × 365 × ₹120 = ₹2cr → ₹9cr incremental, shown ₹8–10cr.</li>
+<li><b>D2 8–12 stores:</b> ~7 more stores ≈ ₹7cr stock and fit-out + team 80 × 12 × ₹1.2L = ₹11.5cr + acquisition ₹5cr → ₹25–35cr incl. losses. Orders = 10 stores × ~200.</li>
+<li>Cross-check: Slikk has raised about $13.5M (₹119cr at ₹88) for roughly six dark stores in Bengaluru, so an order-of-magnitude ₹10–20cr per store of cumulative funding is plausible, my table sits below that.[9][10]</li></ul></details>
+</div></section>
+
+<!-- 7 -->
+<section id="s7"><div class="wrap reveal">
+<h2><span class="num">07</span>Validation plan</h2>
+<p class="lede">Thresholds are my proposals, not industry standards. Set them before you run the test, and write them down.</p>
+<div class="tablewrap"><table id="tblVal"><thead><tr><th class="nosort">Experiment</th><th class="nosort">Setup</th><th class="nosort">Metric</th><th class="nosort">Go if</th><th class="nosort">Kill if</th></tr></thead><tbody></tbody></table></div>
+<div class="grid g2" style="margin-top:16px">
+<div class="card"><h4>Order of work</h4><p><b>Week 0:</b> pick one 3 km micro-cluster in one city (Tier-2 gives you the white space; a metro gives you more demand). Recruit 10–15 stores with a one-page agreement: 15–20% commission, MRP parity, 3-minute response. <b>Weeks 1–4:</b> take orders on WhatsApp with a shared catalogue link and a Google Sheet; broadcast to a store WhatsApp group; book riders by hand on Borzo or Porter. <b>Week 5:</b> read the numbers, decide.</p></div>
+<div class="card"><h4>Public sources to keep checking</h4><p>Reliance Retail quarterly releases (AJIO Rush, JioMart hyperlocal).[8] Nykaa/FSN earnings transcripts.[46] Eternal, Swiggy and Zepto filings and the Redseer report inside Zepto's prospectus.[2] Entrackr, Inc42, Tracxn and Registrar of Companies filings for Slikk, ZILO, KNOT funding. Redseer benchmarks and LocalCircles surveys for consumer data. ONDC network dashboards.</p></div>
+</div>
+</div></section>
+
+<!-- 8 -->
+<section id="s8"><div class="wrap reveal">
+<h2><span class="num">08</span>Data confidence</h2>
+<p class="lede">Every key number, who said it, when, and how far to trust it. <b>High</b> = company or independent firm, primary page read. <b>Medium</b> = reputable media citing a company or analyst. <b>Low</b> = blog, aggregator, or my own calculation.</p>
+<div class="tablewrap"><table id="tblConf"><thead><tr><th>Number</th><th>Value</th><th>Source</th><th>Date</th><th>Type</th><th>Confidence</th></tr></thead><tbody></tbody></table></div>
+</div></section>
+
+<!-- 9 -->
+<section id="s9"><div class="wrap reveal">
+<h2><span class="num">09</span>Sources</h2>
+<p class="lede">Pages were read via search extraction in November 2026. Where only a search snippet was seen, the figure is marked as such in §8. Older sources are flagged.</p>
+<ol class="src" id="srcList"></ol>
+</div></section>
+</main>
+<footer><div class="wrap">Prepared by Hanuman for Saish. Illustrative models are not financial advice. A markdown source with the same data sits next to this file (report.md). Design uses system fonts only, no external dependencies.</div></footer>
+
+<script>
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const cite=t=>String(t).replace(/\[(\d{1,2})\](?![^<]*>)/g,'<a class="cite" href="#src-$1">[$1]</a>');
+const tag=t=>t?`<span class="tag ${t}">${t}</span>`:'';
+const NS='http://www.w3.org/2000/svg';
+function svg(el,html){el.innerHTML=html}
+const inr=n=>(n<0?'−':'')+'₹'+Math.abs(Math.round(n)).toLocaleString('en-IN');
+
+/* ---------- sources ---------- */
+const SRC=[
+[1,"Fynd — Fashion Quick Commerce in India: 2026 market overview (31 Jul 2026)","https://www.fynd.com/blog/fashion-quick-commerce-in-india"],
+[2,"First Resort — Quick-Commerce Fashion in India 2026 data report (secondary compilation of Bain, Redseer, filings)","https://www.firstresort.in/blogs/research/quick-commerce-fashion-india-2026"],
+[3,"Redseer — Quick Commerce in 2026: scale, category mix and profit momentum (Jan 2026 data)","https://redseer.com/articles/quick-commerce-finds-its-new-normal-with-scale-mix-and-momentum/"],
+[4,"Redseer — Online Fashion Brand Index India 2026","https://redseer.com/reports/redseer-brand-index-online-fashion-2026/"],
+[5,"Redseer — Speed in Metro, Scale in Bharat: India's $80Bn online retail story (6 May 2026)","https://redseer.com/articles/speed-in-metro-scale-in-bharat-indias-80-bn-online-retail-story/"],
+[6,"Redseer — The dark store blind spot (Jan 2026)","https://redseer.com/articles/the-dark-store-blind-spot-the-part-of-quick-commerce-growth-that-the-topline-doesnt-show/"],
+[7,"Economic Times — Myntra says M-Now drives 10% of orders in active locations (Nov 2025)","https://m.economictimes.com/tech/startups/myntra-says-its-rapid-commerce-platform-m-now-is-driving-10-of-orders-in-active-locations/articleshow/125479899.cms"],
+[8,"Inc42 — Reliance Retail expands AJIO Rush to 600+ cities (24 Apr 2026)","https://inc42.com/buzz/ril-expands-ajio-rush-to-600-cities/"],
+[9,"BusinessLine — Slikk eyes ₹100 crore monthly GMV in Bengaluru (12 Sep 2026)","https://thehindubusinessline.com/companies/slikk-eyes-100-crore-monthly-gmv-in-bengaluru-plans-delhi-mumbai-expansion/article71459853.ece"],
+[10,"Caplight — Slikk valuation and funding (aggregator estimate)","https://caplight.com/company/slikk"],
+[11,"PrivateMarketView — Slikk valuation (Oct 2026, aggregator estimate)","https://privatemarketview.com/companies/slikk"],
+[12,"PitchBook — Slikk profile (search snippet only: Series AAA $1.6M, 30 Jun 2026)","https://pitchbook.com/profiles/company/641780-38"],
+[13,"Apparel Resources — ZILO raises US$15.3M Series A led by Peak XV (Feb 2026)","https://apparelresources.com/business-news/retail/fashion-q-commerce-start-zilo-raises-us-15-3-million-series-funding/"],
+[14,"Entrepreneur India — KNOT raises $5M led by 12 Flags (Dec 2025)","https://india.entrepreneur.com/news-and-trends/quick-commerce-fashion-startup-knot-raises-usd-5-mn-funding/500720"],
+[15,"Tracxn — KNOT profile (aggregator; search snippet only)","https://tracxn.com/d/companies/knot/__Hd6kWv7Xkyr6ftGAAWvl0vhAKqnz8niWKg-C_bXhF-g"],
+[16,"Business Standard — Fashion qcom players expand inventory, store networks ahead of festive rush (19 Aug 2026)","https://www.business-standard.com/companies/start-ups/fashion-qcom-players-expand-inventory-store-networks-ahead-of-festive-rush-126081901114_1.html"],
+[17,"Business Standard — Fashion qcom start-ups prioritise experience-led shopping over speed (4 Mar 2026)","https://www.business-standard.com/companies/start-ups/fashion-qcom-startups-prioritise-experience-led-shopping-over-speed-126030400674_1.html"],
+[18,"Economic Times — Rapid fashion start-ups are dressed to kill, but can the model keep up? (2026)","https://m.economictimes.com/tech/startups/rapid-fashion-startups-are-dressed-to-killbut-can-the-model-keep-up/amp_articleshow/130178429.cms"],
+[19,"ETRetail — NEWME bets on 24x7 quick fashion as Zip emerges as fastest-growing revenue engine (2025–26; check date)","https://retail.economictimes.indiatimes.com/news/apparel-fashion/newme-bets-big-on-24x7-quick-fashion-as-zip-emerges-as-its-fastest-growing-revenue-engine/125582764"],
+[20,"Hindustan Times — Quick-commerce fashion sales find traction (2026)","https://www.hindustantimes.com/cities/mumbai-news/quickcommerce-fashion-sales-find-traction-101778179881489.html"],
+[21,"Mint — A new breed of online fashion retailers brings the trial room home (Nov 2025)","https://www.livemint.com/industry/retail/fashion-quick-commerce-startups-trial-room-home-11762758525062.html"],
+[22,"Economic Times — Quick fashion start-ups lean on AI, try-and-buy to cut returns (2025; older)","https://m.economictimes.com/tech/startups/quick-fashion-plays-trials-with-ai-to-win-no-return-game/amp_articleshow/122926155.cms"],
+[23,"Business Standard — Flipkart Fashion seller base jumps 77% after zero-commission move (7 Oct 2026)","https://www.business-standard.com/industry/news/flipkart-fashion-sellers-zero-commission-big-billion-days-gen-z-126100700635_1.html"],
+[24,"Blooprint — Myntra vs Ajio vs Nykaa Fashion 2026 and Myntra seller fees (seller blog; low confidence)","https://blooprint.in/blog/myntra-vs-ajio-vs-nykaa-fashion"],
+[25,"Zaroori Retail — Myntra commission and fees explained 2026 (seller blog; low confidence)","https://zarooriretail.com/blog/myntra-commission-fees-explained-2026"],
+[26,"Borzo India Help Center — Hyperlocal delivery pricing (Sep 2026)","https://intercom.help/wefast/en/articles/3046235-hyperlocal-delivery"],
+[27,"Shiprocket — Shadowfax courier charges (reseller page, undated) and Shadowfax hyperlocal page","https://www.shiprocket.in/blog/shadowfax-courier-charges/"],
+[28,"Porter — Bike parcel delivery Bangalore (from ₹48)","https://porter.in/bike-parcel-delivery-bangalore"],
+[29,"OpenAStore — Dark store investment guide (grocery-focused; low confidence)","https://openastore.in/guides/dark-store-investment-guide"],
+[30,"Outlook Business — Snitch launches 60-minute apparel delivery pilot in Bengaluru (Oct 2025)","https://www.outlookbusiness.com/news/snitch-launches-60-minute-apparel-delivery-pilot-in-bengaluru-targets-national-rollout-by-2026"],
+[31,"Adgully — Quickeee enters fashion quick commerce with 60 minute delivery (Jun 2026)","https://www.adgully.com/post/20017/quickeee-enters-fashion-quick-commerce-with-60-minute-delivery"],
+[32,"Indian Retailer — Booon expands 90-minute fashion delivery to Kolkata and Mumbai","https://indianretailer.com/news/booon-expands-90-minute-fashion-delivery-kolkata-and-mumbai"],
+[33,"Flipkart Stories — Big Billion Days 13th edition (6 Oct 2026)","https://stories.flipkart.com/announcement/flipkarts-big-billion-days-returns-for-its-13th-edition"],
+[34,"ETRetail — After strongest growth in years in FY26, Flipkart Fashion bets on Gen Z, creators and quick commerce (citing Bain, How India Shops Online 2026)","https://retail.economictimes.indiatimes.com/news/e-commerce/e-tailing/after-strongest-growth-in-years-in-fy26-flipkart-fashion-bets-on-gen-z-creators-and-quick-commerce/131506599"],
+[35,"CNBC-TV18 — Amazon Now expands to 120 cities, targets 300 by end-2026","https://www.cnbctv18.com/business/amazon-india-quick-commerce-amazon-now-expansion-2026-20003299.htm"],
+[36,"ETRetail — Amazon scales fashion on Now, eyes 300-city expansion (27 Aug 2026)","https://retail.economictimes.indiatimes.com/news/e-commerce/e-tailing/amazon-takes-quick-commerce-to-fashion-eyes-300-cities-for-amazon-now/133554181"],
+[37,"Economic Times — Reliance writes off its $200 million investment in Dunzo (7 Aug 2025; older)","https://m.economictimes.com/tech/startups/reliance-industries-writes-off-its-investment-in-dunzo/articleshow/123169856.cms"],
+[38,"Moneycontrol — Quick fashion delivery start-up Blip shuts down after one year (Jul 2025; older)","https://www.moneycontrol.com/news/business/startup/quick-fashion-delivery-startup-blip-shuts-down-after-one-year-amid-execution-funding-challenges-13271136.html"],
+[39,"NDTV — Quick commerce still a ₹200–₹999 habit, only 16% spend ₹1,000 (LocalCircles survey)","https://ndtv.com/business-news/quick-commerce-spending-habit-diwali-shopping-consumer-localcircles-survey-12241745"],
+[40,"The Wire / PTI — LocalCircles Diwali survey: 71% pick value, 43% do not want to pay any extra fee (27 Oct)","https://m.thewire.in/article/ptiprnews/with-diwali-around-the-corner-71-quick-commerce-users-to-pick-a-platform-that-offers-value-product-quality-important-criteria-for-65-users-and-43-do-not-want-to-pay-any-extra-fee"],
+[41,"Chambers — EPF compliance in the gig economy: Code on Social Security in force from 21 Nov 2025","https://chambers.com/articles/epf-compliance-in-the-gig-economy-is-indias-new-social-security-framework-enough-2"],
+[42,"Indian Express — Gig workers' welfare boards: powers, duties (National Social Security Board notified)","https://indianexpress.com/article/explained/explained-economics/unorganised-gig-workers-board-benefits-10945833"],
+[43,"Build by Ravi Rai — Selling on ONDC in 2026: the honest maths (practitioner blog; low confidence)","https://www.buildbyravirai.com/blog/selling-on-ondc-india-2026-honest-guide"],
+[44,"BusinessLine — Fashion q-comm: impulse buying gets a new beat (late 2025; older)","https://www.thehindubusinessline.com/specials/emerging-entrepreneurs/fashion-q-comm-impulse-buying-gets-a-new-beat/article70139282.ece"],
+[45,"ETRetail — ZILO launches Mall-to-Home model for faster fashion delivery","https://retail.economictimes.indiatimes.com/news/apparel-fashion/zilo-launches-mall-to-home-model-for-faster-fashion-delivery/133150399"],
+[46,"ETBrandEquity — Nykaa Now expands to 7 cities (2025; older; 53 stores, 1.3M orders)","https://brandequity.economictimes.indiatimes.com/news/business-of-brands/nykaa-now-expands-to-7-cities-boosts-bpc-quick-commerce/123279381"],
+[47,"Zoutons — Myntra M-Now explained, May 2026 (blog; low confidence, tier-2 launch list)","https://zoutons.com/news/myntra-m-now-explained-30-minute-fashion-delivery-2026"],
+[48,"Clozzet — Instagram profile (self-reported: 100+ stores, 10,000+ styles, Ahmedabad)","https://www.instagram.com/clozzetindia?hl=en"],
+[49,"Slazzy — Play Store / LinkedIn (Lucknow, 60 min; self-described)","https://slazzy.in"],
+[50,"Dealroom / Hindu BusinessLine — Zulu Club $250K pre-seed from TDV Partners (2025; older)","https://thehindubusinessline.com/companies/fashion-quick-commerce-start-up-zulu-club-raises-pre-seed-funding/article69818425.ece"],
+[51,"Indian Retailer — From groceries to fashion (quotes Google–Redseer: $13bn FY26, $90bn FY31)","https://indianretailer.com/article/retail-business/consumer-trends/groceries-fashion-quick-commerce-expands-indias-retail"],
+[52,"Business Standard — Why quick commerce is a battle no retailer can ignore (6 Jul 2026; Redseer ₹11,000 cr Jan 2026)","https://business-standard.com/companies/news/why-quick-commerce-is-the-retail-battle-no-major-player-can-ignore-126070600701_1.html"],
+[53,"Inc42 — Quick commerce's $68 bn GMV opportunity (Inc42 Datalabs; cited via Fynd)","https://inc42.com/buzz/how-quick-commerces-68-bn-gmv-opportunity-is-reshaping-brand-strategy/"],
+[54,"ETRetail — Slikk targets 20–25% of Bengaluru's online fashion market (Jun 2026)","https://retail.economictimes.indiatimes.com/news/e-commerce/e-tailing/slikk-targets-20-25-of-bengalurus-online-fashion-market-as-it-expands-beyond-apparel/131437557"],
+[55,"Entrackr — Quick fashion delivery start-ups attract investor interest amid mixed signals (Jul 2025; older; cited via First Resort)","https://entrackr.com/analysis-2/quick-fashion-delivery-startups-attract-investor-interest-amid-mixed-signals-9508895"],
+[56,"Reliance Industries / ETRetail — AJIO Rush launched in 6 cities (Jul 2025; cited via Inc42)","https://inc42.com/buzz/reliance-rolls-out-4-hour-fashion-delivery-service-ajio-rush-in-6-cities/"],
+[57,"ETRetail — Rapid fashion delivery gathers pace, but long-term viability in question (2025; Snitch comments; older)","https://retail.economictimes.indiatimes.com/news/apparel-fashion/apparel/rapid-fashion-delivery-gathers-pace-but-long-term-viability-in-question/121637801"]
+];
+$('#srcList').innerHTML=SRC.map(([n,t,u])=>`<li id="src-${n}"><b>[${n}]</b>${t}<br><a href="${u}" rel="noopener" target="_blank">${u}</a></li>`).join('');
+
+/* ---------- static cite pass ---------- */
+$$('main section .wrap').forEach(w=>{
+  const walker=document.createTreeWalker(w,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest('svg,script,style,ol.src,a')?NodeFilter.FILTER_REJECT:/\[\d{1,2}\]/.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT});
+  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+  nodes.forEach(n=>{const s=document.createElement('span');s.innerHTML=cite(n.nodeValue.replace(/&/g,'&amp;').replace(/</g,'&lt;'));n.replaceWith(...s.childNodes)});
+});
+
+/* ---------- market table ---------- */
+const MKT=[
+["Quick-commerce GMV, calendar 2025","$10–11bn; 16–17% of Indian e-retail","Bain via First Resort[2]","2025","M","Medium"],
+["Quick-commerce GMV, FY26","$13–14bn; ~17% of online retail","Redseer[5]","6 May 2026","I","High"],
+["Quick-commerce GMV, Jan 2026 (month)","~₹11,000 crore, ~100% YoY; ~7.8M orders/day","Redseer[3][52]","Feb–Jul 2026","I","High"],
+["Quick-commerce AOV, Jan 2026","~₹460 after MRP discount, excl. delivery fees","Redseer[3]","Feb 2026","I","High"],
+["Fashion growth on quick commerce, Jan 2026","+340% YoY (all quick commerce +100%)","Redseer[3]","Feb 2026","I","High"],
+["Fashion share of quick-commerce orders, metros","8–10% of orders, early 2026","HT citing analysts[20]","2026","M","Low (no named source)"],
+["Non-grocery share of quick-commerce GMV","<5% in 2022 → ~29% in 2025 → 39–44% by 2030","Redseer in Zepto prospectus via First Resort[2]","2025–26","I","Medium"],
+["Online fashion GMV","~$24bn CY26 → $46–53bn CY30P (units read from chart text)","Redseer Brand Index[4]","2026","I","Medium"],
+["Fashion market, all channels","~$116bn CY26 → $170–190bn CY30P; e-commerce ~20%, unorganised ~45%","Redseer[4]","2026","I","Medium"],
+["Quick-commerce fashion, CY26","<1% of online fashion (≈$0.24bn); 3–5% by CY30P ($1.4–2.7bn)","Redseer shares[4]; my multiplication","2026","E","Low–Medium"],
+["Quick-commerce fashion market, competing estimate","$1.7–2bn \"currently\"","Kae Capital in ET[18]","2026","M","Low (conflicts with Redseer; basis unclear)"],
+["Rapid (<4 hrs) share of online fashion","2–6% now (metro 6–10%) → 10–15% CY30P (metro 20–30%)","Redseer[4]","AMJ26","I","Medium"],
+["Fashion return rate, India online","25–30% (industry estimate); ~40% in festive sales","ET via First Resort[2]; Fynd[1]","2025–26","M","Medium"],
+["Online fashion by tier, CY26E","Metro 24%, Tier 1 16%, Tier 2+ 60%","Redseer[4]","2026","I","Medium"],
+["Dark-store breakeven (grocery)","~1,200–1,250 orders/day/store; non-metro ~850","Redseer[6]","Jan 2026","I","High (grocery, not fashion)"]
+];
+$('#tblMarket tbody').innerHTML=MKT.map(r=>`<tr><td>${r[0]}</td><td>${cite(r[1])}</td><td>${cite(r[2])} · ${r[3]}</td><td>${tag(r[4])} <span class="note">${r[5]}</span></td></tr>`).join('');
+
+/* ---------- players ---------- */
+const PL=[
+// name, model, launch, cities, promise, nodes, funding, volume, aov, notes
+{n:"Myntra M-Now",m:"B",l:"Nov 2024 [R]",c:"10+ cities incl. Bengaluru, Mumbai, Delhi NCR, Hyderabad, Kolkata, Pune, Patna",p:"30 min–2 hrs",nodes:80,nt:"80+ dark stores, 940+ pincodes (Nov 2025 company); Fynd says 90+",f:"Part of Flipkart-owned Myntra (Walmart)",v:"~10% of orders where live; 20% penetration; 35M visitors. Orders/GMV: not disclosed",a:"N",t:"R",ref:"[7][1]"},
+{n:"Slikk",m:"B",l:"Aug 2024 [M]",c:"Bengaluru; Delhi, Mumbai in 6–9 months",p:"60 min",nodes:6,nt:"6 dark stores, 12 by year-end (company, Sep 2026)",f:"~$13.5M total; Nexus, Lightspeed, Better Capital. Valuation ~$36–40M (aggregator est.)",v:"Targets ₹45–50cr monthly GMV soon, ₹90–100cr by March. AOV: not disclosed. Claims positive CM1",a:"N",t:"R",ref:"[9][10][11][1]"},
+{n:"ZILO",m:"H",l:"2025 [M]",c:"Mumbai, Thane, Vashi",p:"60–90 min; ~120 min via brand stores",nodes:150,nt:"150+ brand stores tied in, 250 planned; plus dark stores; ~120,000 SKUs",f:"$15.3M Series A (Peak XV, Feb 2026); ~$19.9M total",v:"Try-and-buy ≈ half of orders. Orders/GMV: not disclosed. Targets AOV >₹1,000 segment",a:"N",t:"M",ref:"[16][13][21][45]"},
+{n:"KNOT",m:"B",l:"2025 [M]",c:"Mumbai",p:"60 min, free home trial",nodes:null,nt:"Dark stores, count not disclosed; 200+ brands",f:"$5M (12 Flags, Dec 2025); total $10.1M (Tracxn) to $15.75M (company post): conflict",v:"Not disclosed. Claims partner brands see ~20% web returns vs <1% in stores",a:"N",t:"M",ref:"[14][15][22]"},
+{n:"Nykaa Now",m:"H",l:"2025 [M]",c:"7 cities (older source)",p:"30–120 min",nodes:53,nt:"53 stores (older)",f:"Part of listed FSN E-Commerce",v:"1.3M orders delivered; beauty and personal-care led, fashion minor",a:"N",t:"M",ref:"[46]"},
+{n:"Quickeee",m:"B",l:"Jun 2026 [R]",c:"Mumbai",p:"60 min, try before you pay",nodes:null,nt:"\"Hyperlocal dark stores\" (count n/d)",f:"Not disclosed",v:"Not disclosed; ~17 staff on LinkedIn",a:"N",t:"R",ref:"[31]"},
+{n:"AJIO Rush",m:"A",l:"Q1 FY26 (Jul 2025) [R]",c:"600+ cities (Mar 2026); 6 at launch",p:"4 hrs; 2-hr test on 1,700+ stores",nodes:1700,nt:"1,700+ fashion/lifestyle stores on 2-hr promise (RRVL)",f:"Reliance Retail (listed parent)",v:"Orders: not disclosed; JioMart hyperlocal daily orders +300% YoY. AJIO average bill +23% YoY",a:"N",t:"R",ref:"[8][56][1]"},
+{n:"Clozzet",m:"A",l:"n/d",c:"Ahmedabad",p:"60 min (self-reported)",nodes:100,nt:"100+ stores, 10,000+ styles (Instagram, self-reported)",f:"Not disclosed",v:"Not disclosed. 10K+ Play Store downloads",a:"N",t:"R",ref:"[48]"},
+{n:"Zulu Club",m:"A",l:"2024 [M]",c:"Gurugram / Delhi NCR",p:"100 min; try at home",nodes:null,nt:"Not disclosed",f:"$250K pre-seed, TDV Partners (older)",v:"Not disclosed",a:"N",t:"M",ref:"[50]"},
+{n:"Slazzy",m:"A",l:"2026 [R]",c:"Lucknow",p:"60 min (self-described)",nodes:null,nt:"Not disclosed",f:"Not disclosed",v:"Not disclosed",a:"N",t:"R",ref:"[49]"},
+{n:"NEWME Zip",m:"X",l:"Delhi pilot, Bengaluru launch 2025 [M]",c:"Delhi NCR, Bengaluru; Pune, Mumbai, Hyderabad planned",p:"60 min, 24×7",nodes:null,nt:"Own retail stores; target 50 stores by end next FY",f:"Brand revenue ₹180cr last yr → ~₹300cr",v:"Zip = 15–16% of Bengaluru business. AOV ₹1,400–1,500 online; CAC ₹300–400/user/month",a:"₹1,400–1,500",t:"R",ref:"[19]"},
+{n:"Snitch (stores as hubs)",m:"X",l:"Oct 2025 pilot [M]",c:"Bengaluru; Delhi, Mumbai, Hyderabad planned",p:"60 min",nodes:null,nt:"Store network as hubs; 100-store target by 2028",f:"₹280cr Series B (360 ONE), valuation ~₹2,500cr",v:"Not disclosed. Says customers lean to basics on quick apps",a:"N",t:"M",ref:"[30][57]"},
+{n:"Booon (missed)",m:"A",l:"2024 [M]",c:"Delhi NCR, Bengaluru, Mumbai, Jaipur, Ahmedabad, Kolkata",p:"90–120 min",nodes:null,nt:"Aggregator; \"zero dark store\" model per ET; no public API",f:"Not disclosed (appeared on Shark Tank India)",v:"Not disclosed",a:"N",t:"M",ref:"[18][32]"},
+{n:"Blinkit / Zepto / Instamart",m:"L",l:"fashion pushes 2024–26",c:"Metros",p:"10–30 min",nodes:null,nt:"Grocery dark stores; limited fashion SKUs",f:"Listed or pre-IPO parents",v:"Fashion = 8–10% of metro quick-commerce orders (early 2026, analysts)",a:"N",t:"M",ref:"[20][1]"},
+{n:"Amazon Now",m:"L",l:"2025 [R]",c:"120+ cities, 300 planned",p:"minutes",nodes:800,nt:"~800 micro-fulfilment centres (CNBC-TV18 quoting Amazon exec)",f:"Amazon",v:"$1bn annualised run rate (July); orders +20% month on month. Fashion share: not disclosed",a:"N",t:"M",ref:"[35][36]"},
+{n:"Flipkart Minutes",m:"L",l:"2025 [R]",c:"150+ cities (BBD 2026)",p:"minutes",nodes:null,nt:"77,000+ products in 1,400+ categories",f:"Flipkart (Walmart)",v:"Lifestyle demand on Minutes >2× in a year; orders: not disclosed",a:"N",t:"R",ref:"[33][34]"},
+];
+const MODEL={A:"Store-fulfilled",B:"Dark store",H:"Hybrid",L:"Horizontal app",X:"Brand-owned stores"};
+let sortKey=null,sortDir=1;
+const cols=[["Player","n"],["Model","m"],["Launch","l"],["Cities","c"],["Promise","p"],["Fulfilment points","nodes"],["Funding / valuation","f"],["Volume / traction","v"],["AOV","a"],["Basis","t"]];
+function drawPlayers(){
+  const rows=[...PL];
+  if(sortKey){rows.sort((x,y)=>{let a=x[sortKey],b=y[sortKey];if(a==null)a=-1e9*sortDir*-1;if(b==null)b=-1e9*sortDir*-1;return (typeof a==='number'&&typeof b==='number'?a-b:String(a).localeCompare(String(b)))*sortDir})}
+  $('#tblPlayers thead').innerHTML='<tr>'+cols.map(([h,k])=>`<th data-k="${k}" ${sortKey===k?`aria-sort="${sortDir>0?'ascending':'descending'}"`:''} tabindex="0">${h}</th>`).join('')+'</tr>';
+  $('#tblPlayers tbody').innerHTML=rows.map(p=>`<tr><td><b>${p.n}</b></td><td><span class="chip ${p.m}">${MODEL[p.m]}</span></td><td>${p.l.replace(/\[(R|M)\]/,'<span class="tag $1">$1</span>')}</td><td>${p.c}</td><td>${p.p}</td><td class="n">${p.nodes?p.nodes.toLocaleString('en-IN')+'+':'n/d'}<br><span class="note" style="margin:0">${p.nt}</span></td><td>${p.f}</td><td>${cite(p.v+' '+p.ref)}</td><td>${p.a==='N'?'n/d':p.a}</td><td>${tag(p.t)}</td></tr>`).join('');
+  $$('#tblPlayers th').forEach(th=>{const f=()=>{const k=th.dataset.k;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1}drawPlayers()};th.onclick=f;th.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}}});
+}
+drawPlayers();
+
+/* ---------- charts ---------- */
+const col={A:'#b4421f',B:'#2b3a4a',g:'rgba(28,27,24,.12)',t:'#8a867b',ink:'#1c1b18'};
+function axisY(x0,x1,y0,y1,max,ticks,fmt){let s='';for(let i=0;i<=ticks;i++){const v=max*i/ticks,y=y0-(y0-y1)*i/ticks;s+=`<line x1="${x0}" x2="${x1}" y1="${y}" y2="${y}" stroke="${col.g}"/><text x="${x0-6}" y="${y+4}" font-size="10" fill="${col.t}" text-anchor="end">${fmt(v)}</text>`}return s}
+// GMV
+(()=>{const d=[["2023",2.5,2.5,'B','Bain'],["2024",4.8,5,'B','Bain'],["2025",10,11,'B','Bain'],["FY26",13,14,'R','Redseer'],["2026*",8.3,8.3,'I','Inc42 DL'],["FY31",90,90,'G','Google-Redseer'],["2031*",68,68,'I','Inc42 DL']];
+ const x0=44,x1=548,y0=262,y1=20,max=100,bw=48;let s=axisY(x0,x1,y0,y1,max,5,v=>'$'+v);
+ const step=(x1-x0)/d.length;
+ d.forEach((r,i)=>{const cx=x0+step*i+step/2,h=v=>(y0-y1)*v/max;const proj=r[3]==='G'||r[3]==='I';
+  s+=`<g><title>${r[4]}: $${r[1]}${r[1]!==r[2]?'–'+r[2]:''}bn</title><rect x="${cx-bw/2}" y="${y0-h(r[2])}" width="${bw}" height="${h(r[2])}" fill="${proj?'none':col.B}" stroke="${col.B}" stroke-dasharray="${proj?'4 3':''}" rx="2" opacity="${proj?1:.9}"/>`;
+  if(r[1]!==r[2])s+=`<rect x="${cx-bw/2}" y="${y0-h(r[2])}" width="${bw}" height="${h(r[2])-h(r[1])}" fill="${col.A}" rx="2"/>`;
+  s+=`<text x="${cx}" y="${y0-h(r[2])-6}" font-size="11" text-anchor="middle" fill="${col.ink}">${r[1]!==r[2]?r[1]+'–'+r[2]:r[1]}</text><text x="${cx}" y="${y0+16}" font-size="10.5" text-anchor="middle" fill="${col.t}">${r[0]}</text></g>`});
+ s+=`<text x="${x0}" y="12" font-size="10" fill="${col.t}">solid = reported estimate · dashed = projection or different base · orange = range</text>`;
+ svg($('#chGmv'),s)})();
+// speed mix
+(()=>{const rows=[["Today (AMJ26)",4,12,84],["CY30P",12.5,27.5,65]],rowsM=[["Metro today",8,20,72],["Metro CY30P",25,37.5,37.5]];
+ const all=[...rows,...rowsM];const x0=120,x1=540,bh=30,gap=22;let y=24,s='';
+ const cs=['#b4421f','#c98a5e','#cfc8b8'];
+ all.forEach((r,i)=>{let x=x0;r.slice(1).forEach((v,j)=>{const w=(x1-x0)*v/100;s+=`<rect x="${x}" y="${y}" width="${w}" height="${bh}" fill="${cs[j]}"/><text x="${x+w/2}" y="${y+19}" font-size="11" text-anchor="middle" fill="${j===2?'#1c1b18':'#fff'}">${v}%</text>`;x+=w});
+  s+=`<text x="${x0-8}" y="${y+19}" font-size="11" text-anchor="end" fill="${col.ink}">${r[0]}</text>`;y+=bh+gap+(i===1?14:0)});
+ s+=`<g font-size="10.5" fill="${col.t}"><rect x="${x0}" y="252" width="10" height="10" fill="${cs[0]}"/><text x="${x0+14}" y="261">rapid &lt;4 hrs</text><rect x="${x0+110}" y="252" width="10" height="10" fill="${cs[1]}"/><text x="${x0+124}" y="261">same day 4–24 hrs</text><rect x="${x0+250}" y="252" width="10" height="10" fill="${cs[2]}"/><text x="${x0+264}" y="261">next day or later</text></g>`;
+ svg($('#chSpeed'),s)})();
+// tier
+(()=>{const d=[["Metro (top 8)",24],["Tier 1 (~55 cities)",16],["Tier 2+",60]];let y=30,s='';const x0=150,x1=540;
+ d.forEach(r=>{const w=(x1-x0)*r[1]/70;s+=`<text x="${x0-8}" y="${y+22}" font-size="11" text-anchor="end" fill="${col.ink}">${r[0]}</text><rect x="${x0}" y="${y}" width="${w}" height="34" fill="${r[0]==='Tier 2+'?col.A:col.B}" rx="2"/><text x="${x0+w+8}" y="${y+22}" font-size="12" fill="${col.ink}">${r[1]}%</text>`;y+=62});
+ s+=`<text x="${x0}" y="250" font-size="10.5" fill="${col.t}">growth CY26E: metro 16%, tier 1 16%, tier 2+ 18%</text>`;svg($('#chTier'),s)})();
+// city matrix
+(()=>{const cities=["Mumbai","Delhi NCR","Bengaluru","Hyderabad","Pune","Kolkata","Ahmedabad","Jaipur","Lucknow","Patna"];
+ const P={"M-Now":[1,1,1,1,1,1,0,.5,.5,1],"AJIO Rush":[1,1,1,1,1,1,1,1,1,1],"Slikk":[.5,.5,1,0,0,0,0,0,0,0],"ZILO":[1,0,0,0,0,0,0,0,0,0],"KNOT":[1,0,0,0,0,0,0,0,0,0],"Quickeee":[1,0,0,0,0,0,0,0,0,0],"NEWME Zip":[.5,1,1,.5,.5,0,0,0,0,0],"Snitch":[.5,.5,1,.5,0,0,0,0,0,0],"Booon":[1,1,1,0,0,1,1,1,0,0],"Zulu Club":[0,1,0,0,0,0,0,0,0,0],"Clozzet":[0,0,0,0,0,0,1,0,0,0],"Slazzy":[0,0,0,0,0,0,0,0,1,0]};
+ const x0=100,cw=44,y0=64,rh=26;let s='';
+ cities.forEach((c,i)=>{s+=`<text transform="translate(${x0+cw*i+cw/2+4},${y0-8}) rotate(-45)" font-size="10.5" fill="${col.t}">${c}</text>`});
+ Object.entries(P).forEach(([k,v],r)=>{const y=y0+rh*r;s+=`<text x="${x0-8}" y="${y+17}" font-size="11" text-anchor="end" fill="${col.ink}">${k}</text>`;
+  v.forEach((u,i)=>{s+=`<rect x="${x0+cw*i+2}" y="${y+2}" width="${cw-4}" height="${rh-4}" rx="3" fill="${u===1?col.A:u===.5?'rgba(180,66,31,.35)':'rgba(28,27,24,.05)'}"/>`})});
+ const y=y0+rh*12+8;s+=`<text x="${x0}" y="${y+10}" font-size="11" fill="${col.ink}">Fashion-first players live per city (excl. M-Now, AJIO Rush)</text>`;
+ cities.forEach((c,i)=>{const n=Object.values(P).filter((v,j)=>j>1&&v[i]===1).length;s+=`<text x="${x0+cw*i+cw/2}" y="${y+30}" font-size="12" text-anchor="middle" fill="${n<=1?col.A:col.ink}">${n}</text>`});
+ s+=`<text x="${x0-8}" y="${y+30}" font-size="10.5" text-anchor="end" fill="${col.t}">fashion-first only</text>`;
+ svg($('#chCity'),s)})();
+// positioning map
+(()=>{const pts=PL.filter(p=>p.nodes).map(p=>({n:p.n.replace(' (stores as hubs)',''),m:p.m,y:p.nodes,x:{"Myntra M-Now":60,"Slikk":60,"ZILO":90,"Nykaa Now":75,"AJIO Rush":180,"Clozzet":60,"Amazon Now":15}[p.n]||60}));
+ const x0=56,x1=540,y0=330,y1=24;const xm=v=>x0+(x1-x0)*(v-0)/(200-0),ym=v=>y0-(y0-y1)*(Math.log10(v)-0.5)/(3.5-0.5);
+ let s='';[10,100,1000].forEach(v=>{s+=`<line x1="${x0}" x2="${x1}" y1="${ym(v)}" y2="${ym(v)}" stroke="${col.g}"/><text x="${x0-6}" y="${ym(v)+4}" font-size="10" text-anchor="end" fill="${col.t}">${v}</text>`});
+ [0,60,120,180].forEach(v=>{s+=`<line y1="${y0}" y2="${y1}" x1="${xm(v)}" x2="${xm(v)}" stroke="${col.g}"/><text x="${xm(v)}" y="${y0+16}" font-size="10" text-anchor="middle" fill="${col.t}">${v===0?'~10–30':v}</text>`});
+ const C={A:col.A,B:col.B,H:'#6b6a2a',L:'#7a766b',X:'#8a3a6a'};
+ const off={"Myntra M-Now":[-12,-8],"Slikk":[10,4],"ZILO":[10,4],"Nykaa Now":[10,4],"AJIO Rush":[-10,-10],"Clozzet":[10,14],"Amazon Now":[10,4]};
+ pts.forEach(p=>{const cx=xm(p.x),cy=ym(p.y),o=off[p.n]||[10,4];s+=`<g><title>${p.n}: ${p.y} nodes, ${p.x}-min promise (AJIO Rush: 4-hr promise, 2-hr test; plotted 180)</title><circle cx="${cx}" cy="${cy}" r="8" fill="${C[p.m]}" fill-opacity=".85"/><text x="${cx+o[0]}" y="${cy+o[1]}" font-size="10.5" fill="${col.ink}" text-anchor="${o[0]<0?'end':'start'}">${p.n}</text></g>`});
+ s+=`<text x="${(x0+x1)/2}" y="372" font-size="10.5" text-anchor="middle" fill="${col.t}">delivery promise, minutes →  (slower)</text>`;
+ s+=`<g font-size="10.5" fill="${col.t}">`+Object.entries({B:'Dark store',A:'Store-fulfilled',H:'Hybrid',L:'Horizontal'}).map(([k,v],i)=>`<circle cx="${70+i*105}" cy="392" r="5" fill="${C[k]}"/><text x="${80+i*105}" y="396">${v}</text>`).join('')+'</g>';
+ svg($('#chMap'),s);
+ $('#mapNote').innerHTML=cite('Plotted only where a node count is public. Not plotted (count not disclosed): KNOT, Quickeee, Zulu Club, Slazzy, NEWME, Snitch, Booon, Blinkit, Zepto, Instamart, Flipkart Minutes. Amazon Now is shown at ~800 centres (plotted at ~15 min); Myntra M-Now at 80+ dark stores, 60 min plotted though the promise is 30 min–2 hrs. Positions are my approximation of the headline promise.[8][35]')})();
+
+/* ---------- unit economics ---------- */
+const PRE={base:{aov:1500,dc:80,ret:20,cac:120,comm:20,rec:100,opsA:200,gm:35,opsB:250},
+ opt:{aov:1800,dc:70,ret:15,cac:80,comm:25,rec:100,opsA:400,gm:40,opsB:400},
+ stress:{aov:1200,dc:95,ret:30,cac:180,comm:15,rec:50,opsA:100,gm:30,opsB:150}};
+const FIXA=600000,FIXB=800000;
+function calc(p){
+  const r=p.ret/100,kept=1-r,pay=p.aov*.02,pack=15,ops=25;
+  // A
+  const A={rev:p.aov*(p.comm/100)*kept,deliv:-p.dc,rec:p.dc*(p.rec/100),ret:-r*(p.dc+20),pay:-pay,pack:-pack,ops:-ops,cac:-p.cac};
+  A.pre=Object.values(A).reduce((a,b)=>a+b,0);A.fix=-FIXA/(p.opsA*30);A.cm=A.pre+A.fix;
+  A.be=A.pre>0?FIXA/(A.pre*30):Infinity;
+  // B
+  const dcB=p.dc*.75;
+  const B={rev:p.aov*kept*(p.gm/100),mark:-p.aov*kept*.06,deliv:-dcB,rec:25,ret:-r*(dcB+25),pay:-pay,pack:-(pack+20),ops:-ops,cac:-p.cac};
+  B.pre=Object.values(B).reduce((a,b)=>a+b,0);B.fix=-FIXB/(p.opsB*30);B.cm=B.pre+B.fix;
+  B.be=B.pre>0?FIXB/(B.pre*30):Infinity;
+  return{A,B};
+}
+const IDS=['aov','dc','ret','cac','comm','rec','opsA','gm','opsB'];
+const FMT={aov:v=>inr(v),dc:v=>inr(v),ret:v=>v+'%',cac:v=>inr(v),comm:v=>v+'%',rec:v=>v+'%',opsA:v=>v,opsB:v=>v,gm:v=>v+'%'};
+const getP=()=>Object.fromEntries(IDS.map(i=>[i,+$('#'+i).value]));
+function setP(p){IDS.forEach(i=>{$('#'+i).value=p[i]});update()}
+function waterfall(M,names,x0,w,title,color){}
+function update(){
+  const p=getP();IDS.forEach(i=>$('#o_'+i).textContent=FMT[i](p[i]));
+  const {A,B}=calc(p);
+  const show=(id,sid,M,fix)=>{const e=$('#'+id);e.textContent=inr(M.cm);e.className='v '+(M.cm>=0?'pos':'neg');
+    $('#'+sid).innerHTML=`${(M.cm/p.aov*100).toFixed(1)}% of AOV after fixed costs · before fixed ${inr(M.pre)} · break-even ${isFinite(M.be)?Math.ceil(M.be).toLocaleString('en-IN')+' orders/day':'not reachable'} ${fix}`};
+  show('kA','kAs',A,'per cluster');show('kB','kBs',B,'per store');
+  // P&L chart
+  const LA=[["Commission (net of returns)",A.rev],["Delivery you pay",A.deliv],["Delivery recovered",A.rec],["Returns",A.ret],["Payment fees",A.pay],["Packing",A.pack],["Support and tech",A.ops],["Acquisition",A.cac],["Cluster fixed cost",A.fix]];
+  const LB=[["Gross margin (net of returns)",B.rev],["Markdown and dead stock",B.mark],["Delivery you pay",B.deliv],["Delivery fee collected",B.rec],["Returns",B.ret],["Payment fees",B.pay],["Pick and pack",B.pack],["Support and tech",B.ops],["Acquisition",B.cac],["Store fixed cost",B.fix]];
+  const all=LA.concat(LB).map(r=>r[1]).concat([A.cm,B.cm]);
+  const mp=Math.max(0,...all),mn=Math.max(0,...all.map(v=>-v));
+  const bx0=210,bx1=560,sc=(bx1-bx0)/Math.max(mp+mn,1),zero=bx0+mn*sc;
+  let s='',y=16;
+  const draw=(title,L,M,colr)=>{s+=`<text x="0" y="${y}" font-size="12" font-weight="600" fill="${colr}">${title}</text>`;y+=12;
+    L.forEach(r=>{const v=r[1],w=Math.abs(v)*sc;s+=`<text x="${bx0-12}" y="${y+11}" font-size="10.5" text-anchor="end" fill="${col.t}">${r[0]}</text><rect x="${v>=0?zero:zero-w}" y="${y}" width="${Math.max(w,1)}" height="14" fill="${v>=0?'#3f6b4a':'#a3302a'}" opacity=".85" rx="2"/><text x="636" y="${y+11}" font-size="10.5" text-anchor="end" fill="${col.ink}">${inr(v)}</text>`;y+=19});
+    const v=M.cm,w=Math.abs(v)*sc;s+=`<line x1="0" x2="640" y1="${y+3}" y2="${y+3}" stroke="${col.ink}"/><text x="${bx0-12}" y="${y+25}" font-size="11.5" font-weight="600" text-anchor="end" fill="${col.ink}">Profit per order</text><rect x="${v>=0?zero:zero-w}" y="${y+10}" width="${Math.max(w,1)}" height="18" fill="${colr}" rx="2"/><text x="636" y="${y+25}" font-size="12" font-weight="600" text-anchor="end" fill="${col.ink}">${inr(v)}</text>`;y+=50};
+  draw('A · Store-fulfilled aggregator',LA,A,col.A);
+  s+=`<line x1="${zero}" x2="${zero}" y1="0" y2="${y}" stroke="${col.g}"/>`;
+  draw('B · Dark store',LB,B,col.B);
+  const sv=$('#chPL');sv.setAttribute('viewBox',`0 0 640 ${y}`);svg(sv,s.replace(/y2="\d+"(?= stroke="rgba\(28,27,24,.12\)"\/>)/,`y2="${y}"`));
+  // sensitivity
+  const base=calc(p);const tests=[["AOV −20%",{aov:p.aov*.8}],["AOV +20%",{aov:p.aov*1.2}],["Delivery cost +₹20 per leg",{dc:p.dc+20}],["Delivery cost −₹20 per leg",{dc:Math.max(0,p.dc-20)}],["Return rate +10 points",{ret:Math.min(60,p.ret+10)}],["Return rate −10 points",{ret:Math.max(0,p.ret-10)}],["Acquisition cost +₹50",{cac:p.cac+50}],["Customers pay 50% less of delivery (A only)",{rec:Math.max(0,p.rec-50)}]];
+  $('#tblSens tbody').innerHTML=tests.map(([n,o])=>{const r=calc({...p,...o});const dA=r.A.cm-base.A.cm,dB=r.B.cm-base.B.cm;const f=d=>`<td class="n" style="color:${d<-0.5?'var(--bad)':d>0.5?'var(--good)':'var(--ink3)'}">${d>0.5?'+':''}${inr(d)}</td>`;return `<tr><td>${n}</td>${f(dA)}${f(dB)}</tr>`}).join('');
+}
+IDS.forEach(i=>$('#'+i).addEventListener('input',()=>{$$('.pre').forEach(b=>b.setAttribute('aria-pressed','false'));update()}));
+$$('.pre').forEach(b=>b.addEventListener('click',()=>{$$('.pre').forEach(x=>x.setAttribute('aria-pressed',x===b));setP(PRE[b.dataset.p])}));
+setP(PRE.base);
+
+/* ---------- risk ---------- */
+const RISK=[
+["Stock accuracy and cancellations",5,4,2,3,"No public fashion fill-rate data. Overselling mechanics described by Fynd.[1] Dark store owns the ledger."],
+["Broadcast / ping latency",4,4,1,2,"No acceptance-time data from Swiggy, Zomato, Dunzo, ONDC or Magicpin found. ZILO's store-routed orders take ~120 min vs 60.[45]"],
+["Store willingness and commission",4,5,2,3,"Flipkart zeroed fashion commission after averaging 14–18%.[23] Independent-store appetite: not disclosed."],
+["Brand-outlet, mall lease and MRP limits",4,3,2,3,"ZILO needed months to tie 150 brand stores.[16] Lease and MRP clauses: no public source found."],
+["Store hours vs impulse hours",3,3,1,2,"Dark stores run to ~11:45 pm.[7] No store-hours data."],
+["Walk-in priority and pack time",4,3,1,2,"No data; my judgement. Owned stock removes the conflict."],
+["Disintermediation",3,4,1,2,"No fashion evidence. Mitigation is a product choice (prepaid, no direct contact)."],
+["Third-party logistics cost and reliability",4,4,3,3,"₹35–50 base plus ₹8–10/km.[26][27] Peak-hour reliability: not disclosed. Dunzo collapse.[37]"],
+["Returns and try-and-buy cost",4,4,4,4,"25–30% industry returns.[2] ZILO try-and-buy ≈ half of orders.[21] Rider waits while customer tries."],
+["Fixed-cost utilisation",1,2,5,5,"Redseer grocery breakeven 1,200–1,250 orders/day; non-metro ~850.[6] Fashion breakeven: not disclosed."],
+["Markdown and dead stock",1,1,4,4,"7,000–8,000 styles per store.[18] Markdown rate: not disclosed."],
+["Incumbent response",4,4,4,4,"AJIO Rush 1,700 stores[8]; M-Now 80+ stores[7]; ZILO store ties[16]; Booon already aggregates.[32]"],
+["Funding and burn",2,4,5,5,"Sector burn ~$3M a month (Mar 2026).[18] Blip closed.[38] Slikk burn down 50% in 6 months (company).[9]"],
+["Gig-worker and marketplace regulation",3,3,3,3,"Code on Social Security in force from 21 Nov 2025[41]; gig board notified.[42] Marketplace e-commerce rules and GST treatment: not researched <span class='tag N'>N</span>."]
+];
+const heat=s=>{const t=s/25;const r=Math.round(245-(245-180)*t),g=Math.round(241-(241-66)*t),b=Math.round(232-(232-31)*t);return `rgb(${r},${g},${b})`};
+$('#tblRisk tbody').innerHTML=RISK.map((r,i)=>`<tr><td class="n">${i+1}</td><td>${r[0]}</td><td class="s" style="background:${heat(r[1]*r[2])}">${r[1]*r[2]}<br><span style="font-weight:400;font-size:10px">${r[1]}×${r[2]}</span></td><td class="s" style="background:${heat(r[3]*r[4])}">${r[3]*r[4]}<br><span style="font-weight:400;font-size:10px">${r[3]}×${r[4]}</span></td><td>${cite(r[5])}</td></tr>`).join('');
+const sumA=RISK.reduce((a,r)=>a+r[1]*r[2],0),sumB=RISK.reduce((a,r)=>a+r[3]*r[4],0);
+$('#tblRisk tbody').insertAdjacentHTML('beforeend',`<tr style="background:rgba(28,27,24,.04)"><td></td><td><b>Total (max 350)</b></td><td class="s">${sumA}</td><td class="s">${sumB}</td><td>Totals are not weighted; they only show where the pain sits. A fails on supply risks, B on capital risks.</td></tr>`);
+function drawMx(m){const li=m==='A'?1:3,ii=m==='A'?2:4;let h='';
+  for(let imp=5;imp>=1;imp--){h+=`<div class="ax">${imp}</div>`;for(let l=1;l<=5;l++){const here=RISK.map((r,i)=>[r,i+1]).filter(([r])=>r[li]===l&&r[ii]===imp);h+=`<div style="background:${heat(l*imp)}">${here.map(([r,i])=>`<span class="dot ${m==='B'?'B':''}" title="${r[0]}">${i}</span>`).join('')}</div>`}}
+  h+='<div class="ax"></div>'+[1,2,3,4,5].map(n=>`<div class="ax">${n}</div>`).join('');$('#mx').innerHTML=h;
+  const top=[...RISK].map((r,i)=>[i+1,r[0],r[li]*r[ii]]).sort((a,b)=>b[2]-a[2]).slice(0,4);
+  $('#mxRead').innerHTML=`<b>Top risks, Model ${m}:</b> `+top.map(t=>`#${t[0]} ${t[1]} (${t[2]})`).join('; ')+'.'}
+$$('.seg button').forEach(b=>b.onclick=()=>{$$('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawMx(b.dataset.m)});drawMx('A');
+
+/* ---------- journeys ---------- */
+const P1=[
+{s:"S0",n:"Concierge",cap:"₹4–6L",capm:.05,team:"2",nodes:"10–15 stores",opd:"5–15",t:"6 weeks",k:"accept ≥70%, fill ≥85%, median ≤75 min",r:"Stores ignore the group; riders late",trig:"Go: 100+ completed orders, thresholds met for 2 weeks"},
+{s:"S1",n:"Micro-cluster pilot",cap:"₹65–90L",capm:.78,team:"7",nodes:"40–60 stores",opd:"40–80",t:"6 months",k:"CM/order ≥ ₹0 before fixed; 30-day repeat ≥25%",r:"Commission pushback; delivery fee churn",trig:"Go: 3 straight weeks of ≥60 orders/day and positive CM before fixed"},
+{s:"S2",n:"More clusters, more cities",cap:"₹5–7cr",capm:6,team:"25",nodes:"250–400 stores",opd:"300–600",t:"12 months",k:"fill ≥88%, CAC ≤ ₹120, repeat ≥30%",r:"Incumbents copy; store churn",trig:"Go: 10 top styles drive >30% of orders and miss targets on stock"},
+{s:"S3",n:"Small dark layer",cap:"₹10–14cr",capm:12,team:"60",nodes:"3 hubs + stores",opd:"1,000–2,000",t:"12 months",k:"hub ≥250 orders/day, markdown ≤6%",r:"Becomes Path 2 with extra complexity",trig:"Go: hub CM positive; stock turns ≥8× a year"},
+{s:"S4",n:"Own inventory, private label",cap:"₹35cr+",capm:35,team:"150+",nodes:"8–10 hubs",opd:"4,000",t:"2–3 years",k:"gross margin ≥40% after markdown",r:"Capital intensity; funding",trig:"Raise only on proven cohort data"}];
+const P2=[
+{s:"D0",n:"One dark store",cap:"₹2–3cr",capm:2.5,team:"12",nodes:"1 store, ~7,000 styles",opd:"80–150",t:"4–6 months",k:"250+ orders/day by month 6, returns ≤25%",r:"Stock bets wrong; ramp slower than burn",trig:"Go: 250 orders/day for 4 weeks, CM before fixed ≥ ₹90"},
+{s:"D1",n:"Dense area, 3–4 stores",cap:"₹8–10cr",capm:9,team:"30",nodes:"4 stores",opd:"400–600",t:"12 months",k:"delivery ≤45 min, dead stock ≤8%",r:"Cannibalisation; rent",trig:"Go: avg store ≥250 orders/day; payback model closes"},
+{s:"D2",n:"Scale density",cap:"₹25–35cr",capm:30,team:"80",nodes:"8–12 stores",opd:"1,500–2,500",t:"12–18 months",k:"CM after fixed ≥ 0 in 70% of stores",r:"Funding gap; competition from M-Now",trig:"Go: catalogue limit visible in lost-sale data"},
+{s:"D3",n:"Add store partners",cap:"₹2–3cr extra",capm:2.5,team:"+15",nodes:"+100 partner stores",opd:"3,000+",t:"6–12 months",k:"long-tail fill ≥85%",r:"Now carries Path 1's supply risks too",trig:"Run both supply modes"}];
+const lane=(id,L,k)=>$('#'+id).innerHTML=L.map(x=>`<div class="stage ${k}"><div class="st">${x.s} · ${x.t}</div><h5>${x.n}</h5><dl><dt>capital</dt><dd><b>${x.cap}</b> ${tag('E')}</dd><dt>team</dt><dd>${x.team}</dd><dt>nodes</dt><dd>${x.nodes}</dd><dt>orders/day</dt><dd>${x.opd}</dd><dt>key metric</dt><dd>${x.k}</dd><dt>main risk</dt><dd>${x.r}</dd></dl><div class="trig">${x.trig}</div></div>`).join('');
+lane('lane1',P1,'A');lane('lane2',P2,'B');
+(()=>{let s='';const x0=60,x1=620,y0=250,y1=20,max=90;let cum=0;
+ const dat=(L,off,c)=>{let t=0;return L.map((x,i)=>{t+=x.capm;return {i,t,n:x.s}})};
+ const a=dat(P1),b=dat(P2);
+ s+=axisY(x0,x1,y0,y1,max,5,v=>'₹'+v+'cr');
+ const xs=i=>x0+40+i*((x1-x0-80)/4);const ys=v=>y0-(y0-y1)*v/max;
+ const line=(d,c)=>{let p=d.map((q,j)=>`${j?'L':'M'}${xs(q.i)},${ys(q.t)}`).join(' ');s+=`<path d="${p}" fill="none" stroke="${c}" stroke-width="2"/>`;d.forEach(q=>s+=`<circle cx="${xs(q.i)}" cy="${ys(q.t)}" r="4" fill="${c}"/><text x="${xs(q.i)+6}" y="${ys(q.t)-8}" font-size="10" fill="${c}">${q.n} ₹${q.t.toFixed(q.t<10?1:0)}</text>`)};
+ line(a,col.A);line(b,col.B);
+ ['Stage 1','Stage 2','Stage 3','Stage 4','Stage 5'].forEach((t,i)=>s+=`<text x="${xs(i)}" y="272" font-size="10.5" text-anchor="middle" fill="${col.t}">${t}</text>`);
+ s+=`<text x="${x0+6}" y="14" font-size="10.5" fill="${col.A}">Path 1</text><text x="${x0+60}" y="14" font-size="10.5" fill="${col.B}">Path 2 (4 stages: D0–D3)</text>`;
+ svg($('#chCap'),s)})();
+const PATHS=[
+["Capital to first meaningful volume","₹65–90L to ~60 orders/day (S1)","₹2–3cr to ~100–150 orders/day (D0)","Path 2 buys stock, a lease and a team before first order."],
+["Time to first order","~6 weeks (S0)","~4–6 months (D0)","Concierge needs no app or lease."],
+["Speed to scale","Fast to add stores; slow to add reliable ones","Slow: each store is a lease and a fit-out","Stores are copied by onboarding; dark stores by construction."],
+["Control over stock and experience","Low: stores decide availability and packing","High: you own stock, packing, quality","This is where Path 1 can fail or Path 2 can win."],
+["Margin per order","Thin: commission 15–25%, little delivery margin","Higher gross margin but fixed costs and markdown","Both near zero to slightly negative in my base case."],
+["Risk profile","Supply and trust risk; low capital at risk","Capital and utilisation risk; high capital at risk","Path 1 risks are testable in weeks."],
+["Defensibility","Weak unless you own the store relationship or customer","Moderate: catalogue and speed; easy to be outspent","M-Now and AJIO Rush already hold both."]];
+$('#tblPaths tbody').innerHTML=PATHS.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+
+/* ---------- validation ---------- */
+const VAL=[
+["E1 Concierge MVP","WhatsApp catalogue + shared sheet, 10–15 stores in one 3 km cluster, manual rider booking, 4 weeks, ≥150 orders (paid ads or local groups)","Store acceptance within 3 min; fill rate (right size packed); request-to-door time; cancellation","Accept ≥70%; fill ≥85%; median ≤75 min, p90 ≤100; cancel ≤15%","Accept <50% or fill <70% after two fixes"],
+["E2 Fee test","Randomise delivery fee ₹0 / ₹49 / ₹79 on the order link","Conversion by fee; share paying","≥50% complete at ₹49+","<30% complete at ₹49"],
+["E3 Store economics","Written commission offer of 15–20% with MRP parity; track compliance by mystery shop","Stores signed; price parity; walk-in conflicts","≥10 of 15 stores stay active for 4 weeks","<5 stores sustain"],
+["E4 Repeat and leakage","Tag every customer; count direct store contact","30-day repeat; % who bypass you","Repeat ≥20%; leakage ≤10%","Repeat <10%"],
+["E5 Unit economics","Log real rider cost, packing time, returns, acquisition","CM per order before fixed","≥ ₹0 at ₹1,200+ AOV","< −₹40 after fixes"],
+["E6 Night and gifting probes","Run a late-evening and a gifting-themed week","Orders per hour; AOV; store reach after 9 pm","≥2× average orders/hour after 9 pm in at least one store group","No store available after 9 pm"]];
+$('#tblVal tbody').innerHTML=VAL.map(r=>`<tr>${r.map((c,i)=>`<td${i===0?' style="white-space:nowrap"><b>'+c+'</b>':'>'+c}</td>`).join('')}</tr>`).join('');
+
+/* ---------- confidence ---------- */
+const CONF=[
+["M-Now dark stores / pincodes","80+ / 940+","Myntra via ET[7]","Nov 2025","R","High (company; Fynd says 90+)"],
+["M-Now share of orders","~10% where live","Myntra via ET[7]","Nov 2025","R","Medium"],
+["AJIO Rush cities","600+","Reliance via Inc42[8]","Apr 2026","R","High"],
+["Fashion/lifestyle stores on 2-hr promise","1,700+","Reliance via Inc42[8]","Apr 2026","R","High"],
+["Slikk dark stores","6 (12 by year-end)","BusinessLine[9]","Sep 2026","R","Medium"],
+["Slikk monthly GMV target","₹45–50cr soon; ₹90–100cr by March","BusinessLine[9]","Sep 2026","R","Low (target, not result)"],
+["Slikk funding","$13.5M","Caplight[10], Fynd[1]","2025–26","M","Medium"],
+["Slikk valuation","~$36–40M","Caplight, PrivateMarketView[10][11]","Oct 2026","E","Low (aggregator estimate)"],
+["ZILO Series A","$15.3M (Peak XV $8M)","Apparel Resources[13]","Feb 2026","M","Medium"],
+["ZILO brand stores / SKUs","150+ → 250; ~120,000 SKUs","Business Standard[16]","Aug 2026","M","Medium"],
+["KNOT funding","$5M round; total $10.1M or $15.75M","Entrepreneur[14], Tracxn[15]","Dec 2025","M","Low (conflict)"],
+["NEWME AOV / CAC","₹1,400–1,500 / ₹300–400 per user","CEO in ETRetail[19]","2025–26","R","Medium"],
+["Quick-commerce fashion market","~$0.24bn (mine) vs $1.7–2bn (Kae)","Redseer[4]; ET[18]","2026","E","Low"],
+["Fashion growth","+340% YoY","Redseer[3]","Feb 2026","I","High"],
+["Return rate, online fashion","25–30%","ET via First Resort[2]","2025","M","Medium"],
+["Slikk returns vs marketplaces","40–50% lower","Slikk in ET[22]","2025","R","Low (company claim)"],
+["Borzo hyperlocal price","₹35 + ₹8/km","Borzo help centre[26]","Sep 2026","R","High"],
+["Shadowfax price","₹50 to 4 km, ₹10/km after","Shiprocket[27]","undated","M","Low–Medium"],
+["Myntra commission","17–25% (reported); 25–30% total deductions","Seller blogs[24][25]","2026","M","Low"],
+["Flipkart prior fashion commission","14–18% average, zero since July 2026","Business Standard[23]","Oct 2026","M","Medium"],
+["Fashion dark-store capex / opex","Not disclosed; grocery ₹25–80L capex","OpenAStore[29]","2026","N","Low (not fashion)"],
+["Fashion order frequency, repeat, time-of-day, gender","Not disclosed","none found","—","N","—"],
+["Stock-out / acceptance rates for store dispatch","Not disclosed","none found","—","N","—"],
+["Per-order P&L (both models)","See §4","My model","Nov 2026","E","Low: illustrative"],
+["Stage capital and orders","See §6","My model","Nov 2026","E","Low: illustrative"]];
+$('#tblConf tbody').innerHTML=CONF.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${cite(r[2])}</td><td>${r[3]}</td><td>${tag(r[4])}</td><td>${r[5]}</td></tr>`).join('');
+
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.04});
+$$('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>
