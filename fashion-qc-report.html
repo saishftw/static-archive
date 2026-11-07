@@ -434,6 +434,10 @@ mark.hl.flash{background:var(--hl-bg-h)}
 .sv-kv dt{color:var(--ink-2)}
 .sv-kv dd{margin:0;font-family:var(--mono);font-size:.84rem;text-align:right}
 @media (prefers-reduced-motion:reduce){.sv-pulse{animation:none}.sv-ping{animation:none;opacity:1}}
+
+mark.hl.first::before{content:attr(data-n);display:inline-block;min-width:1.35em;margin-right:.3em;padding:0 .3em;border-radius:99px;background:var(--ink,#1c1b18);color:var(--bg,#fff);font:600 .68em/1.6 ui-monospace,Menlo,monospace;text-align:center;vertical-align:.12em;text-decoration:none}
+.hl-panel li .n{flex:none;min-width:1.6em;font:600 .78rem ui-monospace,Menlo,monospace;opacity:.7;padding-top:.1rem}
+.hl-panel li .lk{flex:none;font:inherit;font-size:.74rem;border:1px solid currentColor;border-radius:6px;background:none;color:inherit;opacity:.7;padding:0 .4rem;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1900,10 +1904,12 @@ function paint(h,s,e,a){
   });
 }
 function unpaint(id){main.querySelectorAll('mark.hl[data-hl="'+id+'"]').forEach(m=>{const p=m.parentNode;m.replaceWith(...m.childNodes);p.normalize()})}
+function renumber(){main.querySelectorAll('mark.hl').forEach(m=>{m.classList.remove('first');m.removeAttribute('data-n')});[...store].filter(h=>h.ok).sort((x,y)=>x.s-y.s).forEach((h,i)=>{const ms=main.querySelectorAll('mark.hl[data-hl="'+h.id+'"]');ms.forEach(m=>m.dataset.n=i+1);if(ms[0])ms[0].classList.add('first');h.n=i+1})}
 function applyAll(){
   const {a,t}=index();
   store.forEach(h=>{const s=locate(h,t);h.ok=s>=0;if(s>=0){h.s=s;h.e=s+h.q.length}});
   store.filter(h=>h.ok).forEach(h=>paint(h,h.s,h.e,a));
+  renumber();
 }
 // selection -> {s,e,q,pre,post}
 function fromSelection(){
@@ -1928,9 +1934,9 @@ function add(sel){
   store.filter(h=>h.ok&&h.s<e&&h.e>s).forEach(h=>{s=Math.min(s,h.s);e=Math.max(e,h.e);unpaint(h.id);store.splice(store.indexOf(h),1)});
   const {a,t}=index();
   const h={id:uid(),s,e,q:t.slice(s,e),pre:t.slice(Math.max(0,s-30),s),post:t.slice(e,e+30),ok:true,at:Date.now(),sec:(document.querySelector('.rail a[aria-current="true"]')||{}).textContent||''};
-  store.push(h);paint(h,s,e,a);save();render();
+  store.push(h);paint(h,s,e,a);renumber();save();render();
 }
-function remove(id){unpaint(id);store=store.filter(h=>h.id!==id);save();render()}
+function remove(id){unpaint(id);store=store.filter(h=>h.id!==id);renumber();save();render()}
 // UI
 const pop=document.createElement('div');pop.className='hl-pop hl-ui';pop.setAttribute('role','toolbar');document.body.appendChild(pop);
 let popAct=null;
@@ -1971,16 +1977,17 @@ function render(){
   btn.innerHTML='<span class="sw"></span><span class="lbl">Highlights</span><b>'+store.length+'</b>';
   const items=[...store].sort((x,y)=>x.s-y.s);
   panel.innerHTML='<header><span>Highlights</span><span class="muted" style="font-weight:400;font-size:.78rem">Saved in this browser</span></header>'+
-    (items.length?'<ul>'+items.map(h=>'<li class="'+(h.ok?'':'gone')+'"><button type="button" class="q" data-go="'+h.id+'" title="'+(h.ok?'Jump to highlight':'Text changed; not found on this page')+'">'+esc(h.q.length>140?h.q.slice(0,140)+'…':h.q)+'</button><button type="button" class="x" data-rm="'+h.id+'" aria-label="Remove highlight">×</button></li>').join('')+'</ul>':'<div class="empty">Select any text in the report, then press Highlight. Highlights stay in this browser.</div>')+
+    (items.length?'<ul>'+items.map((h,i)=>'<li class="'+(h.ok?'':'gone')+'"><span class="n">'+(i+1)+'</span><button type="button" class="q" data-go="'+h.id+'" title="'+(h.ok?'Jump to highlight':'Text changed; not found on this page')+'">'+esc(h.q.length>140?h.q.slice(0,140)+'…':h.q)+'</button><button type="button" class="lk" data-link="'+(i+1)+'" title="Copy link to this point">Link</button><button type="button" class="x" data-rm="'+h.id+'" aria-label="Remove highlight">×</button></li>').join('')+'</ul>':'<div class="empty">Select any text in the report, then press Highlight. Highlights stay in this browser.</div>')+
     (items.length?'<footer><button type="button" class="act" data-copy>Copy all</button><button type="button" class="act" data-clear>Clear all</button></footer>':'');
 }
 btn.addEventListener('click',()=>{const on=panel.classList.toggle('on');btn.setAttribute('aria-expanded',on)});
 panel.addEventListener('click',e=>{
   const go=e.target.closest('[data-go]'),rm=e.target.closest('[data-rm]');
   if(go){const m=main.querySelector('mark.hl[data-hl="'+go.dataset.go+'"]');if(m){m.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});main.querySelectorAll('mark.hl[data-hl="'+go.dataset.go+'"]').forEach(x=>{x.classList.add('flash');setTimeout(()=>x.classList.remove('flash'),1200)})}}
+  else if(e.target.closest('[data-link]')){const b=e.target.closest('[data-link]'),u=location.href.split('#')[0]+'#point-'+b.dataset.link;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{b.textContent='Copied'}).catch(()=>{b.textContent='Copy failed'}).finally(()=>setTimeout(()=>{b.textContent='Link'},1400))}
   else if(rm)remove(rm.dataset.rm);
   else if(e.target.closest('[data-clear]')){if(confirm('Remove all '+store.length+' highlights?')){store.forEach(h=>unpaint(h.id));store=[];save();render()}}
-  else if(e.target.closest('[data-copy]')){const txt=[...store].sort((x,y)=>x.s-y.s).map(h=>'• '+h.q).join('\n\n');const b=e.target.closest('[data-copy]');(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{b.textContent='Copied'}).catch(()=>{b.textContent='Copy failed'}).finally(()=>setTimeout(()=>{b.textContent='Copy all'},1400))}
+  else if(e.target.closest('[data-copy]')){const txt=[...store].sort((x,y)=>x.s-y.s).map((h,i)=>(i+1)+'. '+h.q).join('\n\n');const b=e.target.closest('[data-copy]');(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{b.textContent='Copied'}).catch(()=>{b.textContent='Copy failed'}).finally(()=>setTimeout(()=>{b.textContent='Copy all'},1400))}
 });
 /* Seed: author's highlights, loaded once for visitors with no saved highlights */
 (function(){
@@ -2001,6 +2008,8 @@ panel.addEventListener('click',e=>{
   try{localStorage.setItem(KEY+'-seeded','1')}catch(e){}
 })();
 applyAll();render();save();
+function goHash(){const m=/^#point-(\d+)$/.exec(location.hash);if(!m)return;const h=store.find(x=>x.n==m[1]);if(!h)return;const el=main.querySelector('mark.hl[data-hl="'+h.id+'"]');if(!el)return;el.scrollIntoView({block:'center'});main.querySelectorAll('mark.hl[data-hl="'+h.id+'"]').forEach(x=>{x.classList.add('flash');setTimeout(()=>x.classList.remove('flash'),1600)})}
+addEventListener('hashchange',goHash);setTimeout(goHash,400);
 })();
 </script>
 </body>
