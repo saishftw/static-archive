@@ -1982,6 +1982,23 @@ panel.addEventListener('click',e=>{
   else if(e.target.closest('[data-clear]')){if(confirm('Remove all '+store.length+' highlights?')){store.forEach(h=>unpaint(h.id));store=[];save();render()}}
   else if(e.target.closest('[data-copy]')){const txt=[...store].sort((x,y)=>x.s-y.s).map(h=>'• '+h.q).join('\n\n');const b=e.target.closest('[data-copy]');(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{b.textContent='Copied'}).catch(()=>{b.textContent='Copy failed'}).finally(()=>setTimeout(()=>{b.textContent='Copy all'},1400))}
 });
+/* Seed: author's highlights, loaded once for visitors with no saved highlights */
+(function(){
+  let seeded=false;try{seeded=!!localStorage.getItem(KEY+'-seeded')}catch(e){}
+  if(seeded||store.length)return;
+  const SEEDS=[
+    'Fashion is "aspirational and not an impulse purchase category',
+    'You rent a thin layer between a store and a rider. Reliance, Myntra, Amazon and Flipkart already own that layer with more stores, data and money, and Myntra still lost ₹579 cr in FY26',
+    'Fashion is the fastest-growing quick-commerce category',
+    'Tier 2+ fashion now grows faster than metro fashion (19% vs 16%, H1 2026), but Tier 2 quick-commerce demand for fashion is unproven.',
+    'Only 4% of households buy clothes exclusively online. 47% buy mainly in store. 28% of store-preferrers cite "getting it instantly" as the reason.',
+    'Fast and store-fulfilled is occupied, but only by small players.'
+  ];
+  const {t}=index();
+  SEEDS.forEach(q=>{const s=t.indexOf(q);if(s<0)return;const e=s+q.length;
+    store.push({id:uid(),s,e,q,pre:t.slice(Math.max(0,s-30),s),post:t.slice(e,e+30),ok:true,at:Date.now(),sec:''})});
+  try{localStorage.setItem(KEY+'-seeded','1')}catch(e){}
+})();
 applyAll();render();save();
 })();
 </script>
