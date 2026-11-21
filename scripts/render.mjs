@@ -63,6 +63,7 @@ const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 const ICON = {
   moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg>',
   search: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>',
   close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>',
   arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
@@ -117,6 +118,12 @@ html.js .theme{display:inline-flex}
 .theme svg{width:18px;height:18px}
 .theme .lbl{display:none}
 .theme:active{transform:scale(.97)}
+.tools{display:flex;align-items:center;gap:8px}
+@media (prefers-reduced-motion:no-preference){
+  .refresh.busy svg{animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+}
+.refresh.busy{opacity:.6}
 .mast{padding-bottom:40px}
 h1{font:500 clamp(2.75rem,1.4rem + 4.6vw,5.75rem)/.98 var(--serif);letter-spacing:-.025em;margin:48px 0 0;text-wrap:balance;font-optical-sizing:auto}
 .lede{margin:20px 0 0;max-width:44ch;font-size:1.0625rem;line-height:1.55;color:var(--ink2);text-wrap:pretty}
@@ -275,6 +282,13 @@ function syncTheme(){var d=root.dataset.theme==='dark';toggles.forEach(function(
 toggles.forEach(function(b){b.addEventListener('click',function(){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem('wr-theme',root.dataset.theme)}catch(e){}syncTheme();});});
 syncTheme();
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){var s=null;try{s=localStorage.getItem('wr-theme')}catch(x){}if(!s){root.dataset.theme=e.matches?'dark':'light';syncTheme();}});}catch(e){}
+var refresh=document.querySelector('[data-refresh]');
+if(refresh)refresh.addEventListener('click',function(){
+  if(refresh.classList.contains('busy'))return;
+  refresh.classList.add('busy');
+  // Re-fetch bypassing the HTTP cache so the reload below gets the latest index.
+  fetch(location.pathname,{cache:'reload'}).catch(function(){}).then(function(){location.reload();});
+});
 
 var q=document.getElementById('q');
 var strip=document.getElementById('cats-in');
@@ -448,6 +462,12 @@ ${cats.map((c) => chip(c.key, c.label, c.count, false)).join('\n')}
 <meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161513" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="${esc(FAVICON)}">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Reports">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>${HEAD_JS}</script>
 <style>${CSS}</style>
 </head>
@@ -455,7 +475,7 @@ ${cats.map((c) => chip(c.key, c.label, c.count, false)).join('\n')}
 <a class="skip" href="#main">Skip to reports</a>
 <header class="mast" id="top">
 <div class="wrap">
-<div class="top"><p>${facts}</p><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme">${ICON.moon}<span class="lbl">Dark</span></button></div>
+<div class="top"><p>${facts}</p><div class="tools"><button class="theme refresh" type="button" data-refresh aria-label="Refresh index">${ICON.refresh}<span class="lbl">Refresh</span></button><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme">${ICON.moon}<span class="lbl">Dark</span></button></div></div>
 <h1>Research reports</h1>
 <p class="lede">Newest first. Each report opens as one <span class="nw">self-contained</span> page.</p>
 </div>
