@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Research reports</title>
+<meta name="description" content="An archive of research reports, newest first.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M10%206h16a2%202%200%200%201%202%202v16a2%202%200%200%201-2%202H10L4%2016z%22%20fill%3D%22%239c3f19%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2216%22%20r%3D%222%22%20fill%3D%22%23f7f4ee%22%2F%3E%3C%2Fsvg%3E">
+<script>(function(){var r=document.documentElement;r.classList.add('js');try{var s=localStorage.getItem('wr-theme');var d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=d?'dark':'light';}catch(e){r.dataset.theme='light';}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)r.classList.add('intro');}catch(e){}})();</script>
+<style>
+:root{
+  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Newsreader","Iowan Old Style","Charter","Source Serif 4","Source Serif Pro",Georgia,ui-serif,serif;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+  --pad:20px;--c1:0px;--c2:0px;--c4:0px;--bar-h:0px;
+  color-scheme:light;
+  --bg:#f7f4ee;--card:#fdfbf7;--raised:#efe9df;--sunk:#e8e0d2;
+  --ink:#1f1b16;--ink2:#564d42;--ink3:#6a6156;
+  --line:rgba(31,27,22,.12);--line2:rgba(31,27,22,.2);
+  --accent:#9c3f19;--focus:#9c3f19;--sel:rgba(156,63,25,.18);
+  --tag-bg:#e6e1d8;--tag:#463e34;--bar:rgba(247,244,238,.86);
+}
+html[data-theme=dark]{color-scheme:dark;--bg:#161513;--card:#1c1a18;--raised:#24221f;--sunk:#2c2926;
+  --ink:#efe9de;--ink2:#bdb5a8;--ink3:#9d958a;
+  --line:rgba(239,233,222,.1);--line2:rgba(239,233,222,.18);
+  --accent:#ec9467;--focus:#ec9467;--sel:rgba(236,148,103,.28);
+  --tag-bg:#2c2925;--tag:#cfc6b8;--bar:rgba(22,21,19,.86);}
+@media (prefers-color-scheme:dark){html:not([data-theme]){color-scheme:dark;--bg:#161513;--card:#1c1a18;--raised:#24221f;--sunk:#2c2926;
+  --ink:#efe9de;--ink2:#bdb5a8;--ink3:#9d958a;
+  --line:rgba(239,233,222,.1);--line2:rgba(239,233,222,.18);
+  --accent:#ec9467;--focus:#ec9467;--sel:rgba(236,148,103,.28);
+  --tag-bg:#2c2925;--tag:#cfc6b8;--bar:rgba(22,21,19,.86);}}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;scrollbar-color:var(--line2) transparent}
+html:has(body.has-bar){scroll-padding-top:96px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--sans);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;caret-color:var(--accent)}
+::selection{background:var(--sel);color:var(--ink)}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--line2)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+a:focus-visible{border-radius:4px}
+svg{display:block}
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:30;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:500}
+.skip:focus{top:12px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--pad)}
+.tnum{font-variant-numeric:tabular-nums lining-nums}
+
+/* masthead */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;padding-top:16px;color:var(--ink3);font-size:.875rem}
+.top p{margin:0}
+.theme{flex:none;display:none;align-items:center;justify-content:center;gap:8px;min-width:44px;height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line2);background:var(--card);color:var(--ink);font:500 .875rem var(--sans);cursor:pointer;transition:background-color .16s var(--ease),transform .16s var(--ease)}
+html.js .theme{display:inline-flex}
+.theme svg{width:18px;height:18px}
+.theme .lbl{display:none}
+.theme:active{transform:scale(.97)}
+.mast{padding-bottom:40px}
+h1{font:500 clamp(2.75rem,1.4rem + 4.6vw,5.75rem)/.98 var(--serif);letter-spacing:-.025em;margin:48px 0 0;text-wrap:balance;font-optical-sizing:auto}
+.lede{margin:20px 0 0;max-width:44ch;font-size:1.0625rem;line-height:1.55;color:var(--ink2);text-wrap:pretty}
+
+/* search bar */
+.bar{display:none}
+html.js .bar{display:block;position:sticky;top:0;z-index:10;background:var(--bar);-webkit-backdrop-filter:saturate(1.2) blur(12px);backdrop-filter:saturate(1.2) blur(12px);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:16px;min-height:68px;padding-block:12px}
+.field{position:relative;flex:1;max-width:520px}
+.field .ico{position:absolute;left:12px;top:50%;width:18px;height:18px;margin-top:-9px;color:var(--ink3);pointer-events:none}
+.field input{width:100%;height:44px;margin:0;padding:0 48px 0 40px;border:1px solid var(--line2);border-radius:10px;background:var(--card);color:var(--ink);font:400 1rem var(--sans);-webkit-appearance:none;appearance:none;transition:border-color .16s var(--ease)}
+.field input::placeholder{color:var(--ink3);opacity:1}
+.field input::-webkit-search-cancel-button,.field input::-webkit-search-decoration{-webkit-appearance:none;appearance:none}
+.field input:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px var(--sel)}
+.field kbd{position:absolute;right:10px;top:50%;margin-top:-12px;display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border:1px solid var(--line2);border-bottom-width:2px;border-radius:6px;color:var(--ink3);font:500 .75rem/1 var(--sans);pointer-events:none}
+.field input:focus ~ kbd,.field input:not(:placeholder-shown) ~ kbd{display:none}
+.clear{position:absolute;right:4px;top:50%;margin-top:-18px;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:8px;background:transparent;color:var(--ink2);cursor:pointer;transition:background-color .16s var(--ease),transform .16s var(--ease)}
+.clear svg{width:18px;height:18px}
+.clear:active{transform:scale(.94)}
+.status{margin:0 0 0 auto;color:var(--ink3);font-size:.875rem;white-space:nowrap}
+
+/* category filter: a scroll strip on phones, wrapped buttons from 744px */
+.cats{display:none}
+html.js .cats{display:block}
+.cats-in{position:relative;display:flex;gap:8px;margin:0 calc(var(--pad) * -1);padding:16px var(--pad) 20px;overflow-x:auto;scrollbar-width:none;scroll-padding-inline:var(--pad);--fl:0px;--fr:0px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent);mask-image:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent)}
+.cats-in::-webkit-scrollbar{display:none}
+.cats-in.fade-l{--fl:24px}
+.cats-in.fade-r{--fr:40px}
+.chip{flex:none;display:inline-flex;align-items:center;gap:8px;height:36px;margin:0;padding:0 12px;border:1px solid var(--line2);border-radius:10px;background:var(--card);color:var(--ink);font:500 .875rem/1 var(--sans);white-space:nowrap;cursor:pointer;transition:background-color .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),transform .16s var(--ease)}
+.chip .n{color:var(--ink3);font-variant-numeric:tabular-nums}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chip[aria-pressed=true] .n{color:color-mix(in srgb,var(--bg) 68%,var(--ink))}
+.chip:active{transform:scale(.97)}
+@media (pointer:coarse){.chip{height:40px}}
+
+/* list */
+main{padding-bottom:72px}
+.year{border-top:1px solid var(--line2)}
+html.js .bar + main .year:first-child{border-top-color:transparent}
+.nw{white-space:nowrap}
+.year-h{margin:0;padding:24px 0 4px;font:400 1.75rem/1 var(--serif);color:var(--ink2);font-variant-numeric:lining-nums tabular-nums}
+.entries{list-style:none;margin:0;padding:0;position:relative;z-index:0}
+.entry{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"when go" "body body" "meta meta";gap:8px 16px;padding:20px 0 24px;border-top:1px solid var(--line);transition:transform .16s var(--ease),border-color .2s var(--ease)}
+.entry:first-child{border-top-color:transparent}
+.entry::before{content:"";position:absolute;inset:0 -12px;z-index:-1;border-radius:12px;background:var(--raised);opacity:0;transition:opacity .2s var(--ease),background-color .16s var(--ease)}
+.when{grid-area:when;align-self:center;color:var(--ink2);font-size:.875rem;font-weight:500;line-height:1.5}
+.body{grid-area:body;min-width:0}
+.title{margin:0;font:500 1.5rem/1.2 var(--serif);letter-spacing:-.01em;text-wrap:balance;overflow-wrap:anywhere;font-optical-sizing:auto}
+.title a{text-decoration-color:transparent;transition:text-decoration-color .2s var(--ease)}
+.title a::after{content:"";position:absolute;inset:0 -12px;border-radius:12px}
+.desc{margin:8px 0 0;max-width:64ch;color:var(--ink2);font-size:1rem;line-height:1.55;text-wrap:pretty;overflow-wrap:anywhere}
+.meta{grid-area:meta;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:4px;min-width:0}
+.facts{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:0 8px;min-width:0;color:var(--ink3);font-size:.875rem;line-height:1.5}
+.facts > * + *::before{content:"\00b7";margin-right:8px}
+.cat{color:var(--ink2);overflow-wrap:anywhere}
+.go{grid-area:go;align-self:center;color:var(--ink3);transition:color .2s var(--ease),transform .2s var(--ease)}
+.go svg{width:20px;height:20px}
+.entry:active{transform:scale(.995)}
+.entry:active::before{opacity:1;background:var(--sunk)}
+@supports selector(:has(*)){
+  .title a:focus-visible{outline:none}
+  .entry:has(.title a:focus-visible)::before{opacity:1;outline:2px solid var(--focus);outline-offset:0}
+}
+
+/* hang tag, from the reports */
+.kind{display:inline-flex;align-items:center;gap:6px;max-width:100%;min-height:22px;padding:4px 8px 4px 10px;border-radius:3px 4px 4px 3px;clip-path:polygon(6px 0,100% 0,100% 100%,6px 100%,0 50%);background:var(--tag-bg);color:var(--tag);font:500 .75rem/1.2 var(--sans)}
+.kind::before{content:"";flex:none;width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.55}
+
+/* lead: the newest report */
+.lead{padding:28px 0 40px}
+.lead .title{font-size:clamp(2rem,1.3rem + 2.4vw,3.25rem);line-height:1.06;letter-spacing:-.02em}
+.lead .desc{margin-top:16px;font-size:1.125rem;max-width:56ch}
+.filtering .lead{padding:20px 0 24px}
+.filtering .lead .title{font-size:1.5rem;line-height:1.2;letter-spacing:-.01em}
+.filtering .lead .desc{margin-top:8px;font-size:1rem}
+
+/* states */
+.none,.empty{padding:48px 0 24px}
+.empty{border-top:1px solid var(--line2)}
+body:not(.has-cats) .filtering .year.is-first,.filtering .entry.is-first{border-top-color:transparent}
+.none p,.empty p{margin:0;color:var(--ink2);max-width:52ch}
+.empty h2{margin:0 0 8px;font:500 1.75rem/1.2 var(--serif)}
+.none q{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;min-height:44px;margin-top:16px;padding:0 16px;border-radius:10px;border:1px solid var(--line2);background:var(--card);color:var(--ink);font:500 .9375rem var(--sans);cursor:pointer;transition:background-color .16s var(--ease),transform .16s var(--ease)}
+.btn:active{transform:scale(.97)}
+code{font:.9em ui-monospace,"SF Mono",Menlo,Consolas,monospace;background:var(--raised);padding:2px 6px;border-radius:4px}
+
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;padding:24px 0 48px;border-top:1px solid var(--line2);color:var(--ink3);font-size:.875rem}
+.foot p{margin:0}
+.foot a{text-decoration-color:var(--line2)}
+
+@media (min-width:744px){
+  :root{--pad:40px;--c2:96px;--c4:184px}
+  .top{padding-top:24px}
+  .theme .lbl{display:inline}
+  .mast{padding-bottom:56px}
+  h1{margin-top:72px}
+  .lede{margin-left:var(--c2);font-size:1.125rem}
+  .bar .field,.cats-in{margin-left:var(--c2)}
+  .cats-in{flex-wrap:wrap;margin-right:0;padding:20px 0 24px;overflow:visible;-webkit-mask-image:none;mask-image:none}
+  .entry{grid-template-columns:var(--c2) minmax(0,1fr) var(--c4) 24px;grid-template-areas:"when body meta go";gap:0}
+  .when{align-self:start;padding-top:6px}
+  .body{padding-right:32px}
+  .meta{flex-direction:column;align-items:flex-start;gap:8px;margin-top:6px;padding-right:16px}
+  .go{align-self:start;margin-top:6px}
+  .title{font-size:1.625rem}
+  .lead .when,.lead .meta,.lead .go{padding-top:0;margin-top:14px}
+  .filtering .lead .when{margin-top:0;padding-top:6px}
+  .filtering .lead .meta,.filtering .lead .go{margin-top:6px}
+  .filtering .lead .title{font-size:1.625rem}
+  .none,.empty{padding-left:var(--c2)}
+}
+@media (min-width:1100px){
+  :root{--c1:168px;--c2:104px}
+  html.js body.has-bar{--bar-h:70px}
+  .lede,.bar .field,.cats-in{margin-left:calc(var(--c1) + var(--c2))}
+  .none,.empty{margin-left:var(--c1)}
+  .year{display:grid;grid-template-columns:var(--c1) minmax(0,1fr)}
+  .year-h{position:sticky;top:calc(var(--bar-h) + 24px);align-self:start;padding:28px 0;font-size:2rem}
+  .year .entries{grid-column:2}
+}
+@media (hover:hover) and (pointer:fine){
+  .theme:hover,.btn:hover,.chip:not([aria-pressed=true]):hover{background:var(--raised)}
+  .clear:hover{background:var(--raised)}
+  .entry:hover::before{opacity:1}
+  .entry:hover,.entry:hover + .entry{border-top-color:transparent}
+  .entry:hover .title a{text-decoration-color:var(--line2)}
+  .entry:hover .go{color:var(--accent);transform:translateX(3px)}
+  footer a:hover{text-decoration-color:currentColor}
+}
+@media (hover:none){.field kbd{display:none}}
+@media (prefers-reduced-motion:no-preference){
+  html.intro .entry{animation:rise .56s var(--ease) both;animation-delay:calc(var(--i,0) * 40ms + 40ms)}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}}
+}
+@media (prefers-reduced-motion:reduce){
+  .entry,.go,.theme,.btn,.clear,.chip{transition-property:opacity,background-color,color,border-color,text-decoration-color}
+  .entry:active,.theme:active,.btn:active,.clear:active,.chip:active{transform:none}
+  .entry:hover .go{transform:none}
+}
+@media print{
+  .bar,.cats,.theme,.go,.skip{display:none!important}
+  .entry{break-inside:avoid}
+}
+</style>
+</head>
+<body class="has-bar has-cats">
+<a class="skip" href="#main">Skip to reports</a>
+<header class="mast" id="top">
+<div class="wrap">
+<div class="top"><p>8 reports · Updated <time class="tnum" datetime="2026-11-18">18 Nov 2026</time></p><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span class="lbl">Dark</span></button></div>
+<h1>Research reports</h1>
+<p class="lede">Newest first. Each report opens as one <span class="nw">self-contained</span> page.</p>
+</div>
+</header>
+<div class="bar">
+<div class="wrap" role="search">
+<div class="field">
+<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+<label class="vh" for="q">Search reports</label>
+<input id="q" type="search" placeholder="Search reports" autocomplete="off" spellcheck="false" enterkeyhint="go" aria-describedby="status">
+<kbd aria-hidden="true">/</kbd>
+<button class="clear" id="clear" type="button" aria-label="Clear search" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+</div>
+<p class="status tnum" id="status" aria-live="polite"></p>
+</div>
+</div><div class="cats wrap">
+<div class="cats-in" id="cats-in" role="group" aria-label="Filter by category">
+<button class="chip" type="button" data-c="" data-label="All" aria-pressed="true">All<span class="n">8</span></button>
+<button class="chip" type="button" data-c="fashion &amp; retail" data-label="Fashion &amp; Retail" aria-pressed="false">Fashion &amp; Retail<span class="n">3</span></button>
+<button class="chip" type="button" data-c="hardware reviews" data-label="Hardware Reviews" aria-pressed="false">Hardware Reviews<span class="n">2</span></button>
+<button class="chip" type="button" data-c="economic policy" data-label="Economic Policy" aria-pressed="false">Economic Policy<span class="n">1</span></button>
+<button class="chip" type="button" data-c="logistics &amp; operations" data-label="Logistics &amp; Operations" aria-pressed="false">Logistics &amp; Operations<span class="n">1</span></button>
+<button class="chip" type="button" data-c="travel planning" data-label="Travel Planning" aria-pressed="false">Travel Planning<span class="n">1</span></button>
+</div>
+</div>
+<main id="main" class="wrap">
+<section class="year" aria-labelledby="y-2026">
+<h2 class="year-h tnum" id="y-2026">2026</h2>
+<ol class="entries">
+<li class="entry lead" data-q="fashion discovery and wardrobes validation report fashion &amp; retail decision report on a fashion discovery and influencer wardrobe platform for india. verdict, evidence, unit economics and a 6-week test. fashion-wardrobe-report 18 nov 2026 18 november 2026" data-c="fashion &amp; retail" style="--i:0">
+<time class="when tnum" datetime="2026-11-18">18 Nov<span class="vh"> 2026</span></time>
+<div class="body"><h3 class="title"><a href="fashion-wardrobe-report.html">Fashion discovery and wardrobes</a></h3><p class="desc">Decision report on a fashion discovery and influencer wardrobe platform for India. Verdict, evidence, unit economics and a 6-week test.</p></div>
+<div class="meta"><span class="kind">Validation report</span><span class="facts"><span class="cat">Fashion &amp; Retail</span><span class="size tnum">253 KB</span></span></div>
+<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</li>
+<li class="entry" data-q="fashion quick commerce in india: store-fulfilled aggregator vs dark store fashion &amp; retail decision report on an asset-light, store-fulfilled fashion quick-commerce aggregator in india versus the dark-store model. data as of 4 november 2026. fashion-qc-report 5 nov 2026 5 november 2026" data-c="fashion &amp; retail" style="--i:1">
+<time class="when tnum" datetime="2026-11-05">5 Nov<span class="vh"> 2026</span></time>
+<div class="body"><h3 class="title"><a href="fashion-qc-report.html">Fashion quick commerce in India: store-fulfilled aggregator vs dark store</a></h3><p class="desc">Decision report on an asset-light, store-fulfilled fashion quick-commerce aggregator in India versus the dark-store model. Data as of 4 November 2026.</p></div>
+<div class="meta"><span class="facts"><span class="cat">Fashion &amp; Retail</span><span class="size tnum">378 KB</span></span></div>
+<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</li>
+<li class="entry" data-q="fashion quick commerce in india: store-fulfilled aggregator vs dark store fashion &amp; retail fashion-quick-commerce-india-report 5 nov 2026 5 november 2026" data-c="fashion &amp; retail" style="--i:2">
+<time class="when tnum" datetime="2026-11-05">5 Nov<span class="vh"> 2026</span></time>
+<div class="body"><h3 class="title"><a href="fashion-quick-commerce-india-report.html">Fashion quick commerce in India: store-fulfilled aggregator vs dark store</a></h3></div>
+<div class="meta"><span class="facts"><span class="cat">Fashion &amp; Retail</span><span class="size tnum">84 KB</span></span></div>
+<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</li>
+<li class="entry" data-q="civil engineering &amp; 3d cad laptop buyer&#39;s guide (goa 403521) hardware reviews civil-engineering-laptop-guide-goa 16 oct 2026 16 october 2026" data-c="hardware reviews" style="--i:3">
+<time class="when tnum" datetime="2026-10-16">16 Oct<span class="vh"> 2026</span></time>
+<div class="body"><h3 class="title"><a href="civil-engineering-laptop-guide-goa.html">Civil Engineering &amp; 3D CAD Laptop Buyer&#39;s Guide (Goa 403521)</a></h3></div>
+<div class="meta"><span class="facts"><span class="cat">Hardware Reviews</span><span class="size tnum">33 KB</span></span></div>
+<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</li>
+<li class="entry" data-q="india: 75 years of government economic performance economic policy india-govt-economic-performance 2 sep 2026 2 september 2026" data-c="economic policy" style="--i:4">
+<time class="when tnum" datetime="2026-09-02">2 Sep<span class="vh"> 2026</span></time>
+<div class="body"><h3 class="title"><a href="india-govt-economic-performance.html">India: 75 Years of Government Economic Performance</a></h3></div>
+<div class="meta"><span class="facts"><span class="cat">Economic Policy</span><span class="size tnum">13 KB</span></span></div>
+<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</li>
+<li class="entry" data-q="bom → bkk → pqc → han — trip dossier travel planning thailand-vietnam-trip-itinerary 18 aug 2026 18 august 2026" data-c="travel planning" style="--i:5">
+<time class="when tnum" datetime="2026-08-18">18 Aug<span class="vh"> 2026</span></time>
+<div class="body"><h3 class="title"><a href="thailand-vietnam-trip-itinerary.html">BOM → BKK → PQC → HAN — Trip Dossier</a></h3></div>
+<div class="meta"><span class="facts"><span class="cat">Travel Planning</span><span class="size tnum">18 KB</span></span></div>
+<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</li>
+<li class="entry" data-q="ai in hvac component manufacturing — technical due diligence hardware reviews hvac-ai-report 5 jul 2026 5 july 2026" data-c="hardware reviews" style="--i:6">
+<time class="when tnum" datetime="2026-07-05">5 Jul<span class="vh"> 2026</span></time>
+<div class="body"><h3 class="title"><a href="hvac-ai-report.html">AI in HVAC Component Manufacturing — Technical Due Diligence</a></h3></div>
+<div class="meta"><span class="facts"><span class="cat">Hardware Reviews</span><span class="size tnum">97 KB</span></span></div>
+<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</li>
+<li class="entry" data-q="smb logistics digitization audit 2026 logistics &amp; operations logistics-market-analysis-report 1 jul 2026 1 july 2026" data-c="logistics &amp; operations" style="--i:7">
+<time class="when tnum" datetime="2026-07-01">1 Jul<span class="vh"> 2026</span></time>
+<div class="body"><h3 class="title"><a href="logistics-market-analysis-report.html">SMB Logistics Digitization Audit 2026</a></h3></div>
+<div class="meta"><span class="facts"><span class="cat">Logistics &amp; Operations</span><span class="size tnum">42 KB</span></span></div>
+<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</li>
+</ol>
+</section>
+<div class="none" id="none" hidden><p>No reports match <q id="none-q"></q><span id="none-in"></span>.</p><button class="btn" id="none-clear" type="button">Clear search</button></div>
+</main>
+<footer><div class="wrap"><div class="foot"><p>8 reports, 2026</p><a href="#top">Back to top</a></div></div></footer>
+<script>(function(){
+var root=document.documentElement;
+var endIntro=function(){root.classList.remove('intro')};
+setTimeout(endIntro,1100);
+var toggles=[].slice.call(document.querySelectorAll('[data-theme-toggle]'));
+function syncTheme(){var d=root.dataset.theme==='dark';toggles.forEach(function(b){b.setAttribute('aria-pressed',d?'true':'false')});}
+toggles.forEach(function(b){b.addEventListener('click',function(){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem('wr-theme',root.dataset.theme)}catch(e){}syncTheme();});});
+syncTheme();
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){var s=null;try{s=localStorage.getItem('wr-theme')}catch(x){}if(!s){root.dataset.theme=e.matches?'dark':'light';syncTheme();}});}catch(e){}
+
+var q=document.getElementById('q');
+var strip=document.getElementById('cats-in');
+var chips=strip?[].slice.call(strip.querySelectorAll('.chip')):[];
+if(!q&&!chips.length)return;
+var main=document.getElementById('main');
+var entries=[].slice.call(main.querySelectorAll('.entry'));
+var years=[].slice.call(main.querySelectorAll('.year'));
+var status=document.getElementById('status');
+var none=document.getElementById('none');
+var noneQ=document.getElementById('none-q');
+var noneIn=document.getElementById('none-in');
+var noneClear=document.getElementById('none-clear');
+var clear=document.getElementById('clear');
+var total=entries.length;
+var cat='';
+function norm(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();}
+function chipFor(key){for(var i=0;i<chips.length;i++){if(chips[i].getAttribute('data-c')===key)return chips[i];}return null;}
+function visible(){for(var i=0;i<entries.length;i++){if(!entries[i].hidden)return entries[i].querySelector('.title a');}return null;}
+function apply(){
+  var raw=q?q.value.trim():'';var terms=norm(raw).split(' ').filter(Boolean);var n=0;
+  entries.forEach(function(e){var hay=e.getAttribute('data-q');var ok=(!cat||e.getAttribute('data-c')===cat)&&terms.every(function(t){return hay.indexOf(t)!==-1});e.hidden=!ok;if(ok)n++;});
+  var firstYear=null;
+  entries.forEach(function(e){e.classList.remove('is-first');});
+  years.forEach(function(y){var first=y.querySelector('.entry:not([hidden])');y.hidden=!first;if(first){first.classList.add('is-first');if(!firstYear)firstYear=y;}y.classList.toggle('is-first',y===firstYear);});
+  var active=terms.length>0||cat!=='';
+  main.classList.toggle('filtering',active);
+  status.textContent=active?(n+' of '+total):'';
+  chips.forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-c')===cat?'true':'false');});
+  var label=cat?chipFor(cat).getAttribute('data-label'):'';
+  if(none){noneQ.textContent=raw;noneIn.textContent=label?' in '+label:'';noneClear.textContent=label?'Clear filters':'Clear search';none.hidden=n>0;}
+  if(clear)clear.hidden=!q.value;
+  try{var u=new URL(location.href);if(raw)u.searchParams.set('q',raw);else u.searchParams.delete('q');if(label)u.searchParams.set('c',label);else u.searchParams.delete('c');history.replaceState(null,'',u.href);}catch(e){}
+}
+function fades(){if(!strip)return;var max=strip.scrollWidth-strip.clientWidth;strip.classList.toggle('fade-l',strip.scrollLeft>2);strip.classList.toggle('fade-r',strip.scrollLeft<max-2);}
+chips.forEach(function(b){b.addEventListener('click',function(){endIntro();cat=b.getAttribute('data-c');apply();});});
+if(strip){strip.addEventListener('scroll',fades,{passive:true});addEventListener('resize',fades);fades();}
+if(q){
+  q.addEventListener('input',function(){endIntro();apply();});
+  q.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){if(q.value){q.value='';apply();}else{q.blur();}e.preventDefault();}
+    else if(e.key==='Enter'){var a=visible();if(a){e.preventDefault();location.href=a.href;}}
+    else if(e.key==='ArrowDown'){var b=visible();if(b){e.preventDefault();b.focus();}}
+  });
+  clear.addEventListener('click',function(){q.value='';apply();q.focus();});
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='/'||e.metaKey||e.ctrlKey||e.altKey||e.defaultPrevented)return;
+    var t=e.target;var tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    e.preventDefault();q.focus();q.select();
+  });
+}
+if(noneClear)noneClear.addEventListener('click',function(){cat='';if(q){q.value='';}apply();if(q)q.focus();});
+try{
+  var params=new URL(location.href).searchParams;var iq=q?(params.get('q')||''):'';var ic=norm(params.get('c')||'');
+  var c=ic?chipFor(ic):null;
+  if(iq||c){endIntro();if(q)q.value=iq;cat=c?ic:'';apply();}
+  if(c&&strip){strip.scrollLeft=Math.max(0,c.offsetLeft-strip.clientWidth/2+c.offsetWidth/2);fades();}
+}catch(e){}
+})();</script>
+</body>
+</html>

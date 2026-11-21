@@ -1,0 +1,8 @@
+#!/bin/sh
+# Rebuild the archive index and stage it so new reports always appear in it.
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root" || exit 1
+command -v node >/dev/null 2>&1 || { echo "pre-commit: node not found" >&2; exit 1; }
+node scripts/build.mjs || exit 1
+git add index.html
+if [ -f categories.json ]; then git add categories.json; fi
