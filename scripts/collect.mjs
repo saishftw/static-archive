@@ -9,11 +9,17 @@ const decode = (s) =>
   s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/\s+/g, ' ').trim();
 
-// Read only the <head>: reports embed large base64 fonts after it.
-function readHead(file) {
+// Reports embed large base64 fonts, so read the <head> and a short visible-text excerpt only.
+function readParts(file) {
   const html = readFileSync(file, 'utf8');
   const end = html.search(/<\/head>/i);
-  return end === -1 ? html.slice(0, 20000) : html.slice(0, end);
+  const head = end === -1 ? html.slice(0, 20000) : html.slice(0, end);
+  const excerpt = decode(
+    html.slice(end === -1 ? 0 : end)
+      .replace(/<(script|style|svg|noscript)\b[\s\S]*?<\/\1>/gi, ' ')
+      .replace(/<[^>]+>/g, ' '),
+  ).slice(0, 700);
+  return { head, excerpt };
 }
 
 function meta(head, name) {
@@ -49,7 +55,7 @@ export function collectReports(root) {
     const rel = entry.name;
     const slug = rel.replace(/\.html$/i, '');
     const file = join(root, rel);
-    const head = readHead(file);
+    const { head, excerpt } = readParts(file);
     const t = head.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
     const title = t ? decode(t[1]) : slug;
     const date = meta(head, 'date') || meta(head, 'article:published_time') || titleDate(title)
@@ -60,6 +66,7 @@ export function collectReports(root) {
       title,
       description: meta(head, 'description') || meta(head, 'og:description'),
       metaCategory: meta(head, 'category'),
+      excerpt,
       date: date.slice(0, 10),
       sizeKb: Math.round(statSync(file).size / 1024),
     });

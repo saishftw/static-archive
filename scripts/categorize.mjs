@@ -11,7 +11,7 @@ const MODEL = process.env.ARCHIVE_CATEGORY_MODEL || 'github-copilot/claude-haiku
 const MAX_LEN = 28;
 
 const keyOf = (r) =>
-  createHash('sha1').update(`${r.title}\n${r.description}`).digest('hex').slice(0, 12);
+  createHash('sha1').update(`${r.title}\n${r.description}\n${r.excerpt}`).digest('hex').slice(0, 12);
 
 export function cleanCategory(raw) {
   const line = String(raw ?? '').split('\n').map((l) => l.trim()).find(Boolean) ?? '';
@@ -23,7 +23,7 @@ export function cleanCategory(raw) {
 function ask(report, existing) {
   const prompt = [
     'Assign ONE category to this research report for an archive index.',
-    'Rules: 1-3 words, Title Case, a topic area (not a document type like "Report").',
+    'Rules: 1-3 words, Title Case, broad enough that several reports could share it. Name the industry or subject area the report is about, not its format ("Report", "Review", "Guide") and not the intended use of the document.',
     existing.length
       ? `Reuse one of these existing categories if it fits: ${existing.join(', ')}. Only invent a new one if none fits.`
       : 'No categories exist yet; invent a broad, reusable one.',
@@ -31,6 +31,7 @@ function ask(report, existing) {
     '',
     `Title: ${report.title}`,
     `Description: ${report.description || '(none)'}`,
+    `Opening text: ${report.excerpt || '(none)'}`,
   ].join('\n');
   const out = execFileSync('omp', [
     '-p', '--no-session', '--no-tools', '--no-skills', '--no-rules', '--no-context-files',
@@ -54,8 +55,10 @@ export function categorize(reports, root) {
     const existing = [...new Set([...reports, ...Object.values(next)].map((x) => x.category).filter(Boolean))].sort();
     let category = '';
     if (!offline) {
-      try { category = ask(r, existing); }
-      catch (e) { console.warn(`categorize: ${r.slug}: ${String(e.message).split('\n')[0]}`); }
+      try {
+        category = ask(r, existing);
+        if (!category) console.warn(`categorize: ${r.slug}: model reply rejected (empty, too long or malformed)`);
+      } catch (e) { console.warn(`categorize: ${r.slug}: ${String(e.message).split('\n')[0]}`); }
     }
     if (category) {
       r.category = category;
